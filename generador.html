@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0a5c7a">
+<title>Códigos Premium · Dr. De María Prieto</title>
+<style>
+:root{--bg:#eef3f5;--surface:#fff;--ink:#11222b;--mute:#5a6c75;--line:#d6e0e4;--accent:#0a5c7a;--accent2:#e3f0f5;--ok:#1b6e45;--okbg:#e1f3e9;--crit:#a02a2a;--critbg:#f8e3e3;--warn:#8f5200;--warnbg:#fbebc8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:84px}
+header{background:var(--accent);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
+header h1{margin:0;font-size:1.15rem}header small{opacity:.85}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px}
+h2{font-size:1.05rem;margin:0 0 10px}
+.lab{display:block;font-size:.8rem;font-weight:600;color:var(--mute);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.03em}
+input,textarea{font:inherit;color:var(--ink);padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;width:100%}
+textarea{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;min-height:90px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{flex:1 1 calc(50% - 8px);min-width:130px;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 10px;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+.chip b{display:block;font-size:1.05rem}.chip span{font-size:.78rem;color:var(--mute)}
+.chip.on{border-color:var(--accent);background:var(--accent2)}
+.chips.sm .chip{flex:1 1 0;min-width:0;text-align:center;padding:10px 4px}
+.step{display:flex;align-items:center;gap:10px}.step button{width:48px;height:48px;font-size:1.5rem;border-radius:12px;border:1px solid var(--line);background:#fff}
+.step output{flex:1;text-align:center;font-size:1.4rem;font-weight:700}
+button{font:inherit}
+.cta{width:100%;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:15px;font-weight:700;font-size:1.05rem;margin-top:16px;cursor:pointer}
+.cta:disabled{opacity:.4}.btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 14px;cursor:pointer;color:var(--ink)}
+.btn.wa{background:#1fa855;color:#fff;border-color:#1fa855;font-weight:700;width:100%;padding:14px;font-size:1.02rem}
+.btn.dng{color:var(--crit);border-color:#e3b9b9}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.row .btn{flex:1}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:10px 12px;margin-top:12px;font-size:.9rem}
+.good{background:var(--okbg);color:var(--ok);border-radius:12px;padding:10px 12px;margin-top:12px}
+.bad{color:var(--crit);font-weight:600;margin:10px 0 0}
+.big{font-size:1.5rem;font-weight:800;letter-spacing:.01em;word-break:break-all}
+.pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:.78rem;font-weight:700}
+.p-ok{background:var(--okbg);color:var(--ok)}.p-w{background:var(--warnbg);color:var(--warn)}.p-b{background:var(--critbg);color:var(--crit)}
+.item{border-top:1px solid var(--line);padding:12px 0}.item:first-child{border-top:0}.item .t{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.mute{color:var(--mute);font-size:.85rem}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:10px 4px 9px;color:var(--mute);font-size:.78rem}
+nav button b{display:block;font-size:1.3rem;font-weight:400}nav button.on{color:var(--accent);font-weight:700}
+.link{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;word-break:break-all;background:var(--bg);border-radius:10px;padding:10px;margin-top:10px;max-height:5.5em;overflow:auto}
+[hidden]{display:none!important}
+details{margin-top:14px}summary{cursor:pointer;color:var(--mute)}
+</style></head><body>
+<header><div class="wrap"><h1>⭐ Códigos Premium</h1><small>Consulta Dr. De María Prieto · uso privado</small></div></header>
+<div class="wrap" id="app"></div>
+<nav id="nav" hidden><button data-t="new"><b>➕</b>Nuevo</button><button data-t="reg"><b>📋</b>Emitidos</button><button data-t="set"><b>⚙️</b>Clave</button></nav>
+<script>
+const $=function(s){return document.querySelector(s);};
+const LS='primo-gen-registro-v1',LSK='primo-gen-key-v2',LSP='primo-gen-portal';
+const PORTAL='https://dimaria55.github.io/RHB/';
+const SURG=[['LCA','LCA','Ligamento cruzado'],['PTC','PTC','Prótesis de cadera'],['PTR','PTR','Prótesis de rodilla'],['RAD','RAD','Radio distal'],['MAN','MAN','Manguito rotador']];
+let S={tab:'new',priv:null,fp:'',srg:'LCA',date:'',num:1,months:12,note:'',res:null,err:'',tmpKey:null,msg:''};
+function p2(n){return (n<10?'0':'')+n;}
+function today(){const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
+function dmy(i){const p=i.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function addMonths(iso,m){const p=iso.split('-').map(Number);const d=new Date(p[0],p[1]-1+m,p[2]);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function b64u(buf){const a=new Uint8Array(buf);let s='';for(let i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function unb64u(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const s=atob(t),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
+function reg(){try{return JSON.parse(localStorage.getItem(LS)||'[]');}catch(e){return [];}}
+function saveReg(r){try{localStorage.setItem(LS,JSON.stringify(r));}catch(e){}}
+function codeId(s,d,n){const p=d.split('-');return 'P-'+s+'-'+p[2]+p[1]+p[0].slice(2)+'-'+n;}
+function nextNum(){const d=S.date;if(!d)return 1;const pre='P-'+S.srg+'-'+d.split('-')[2]+d.split('-')[1]+d.split('-')[0].slice(2)+'-';let m=0;reg().forEach(function(r){if(r.code.indexOf(pre)===0){const k=parseInt(r.code.slice(pre.length),10);if(k>m)m=k;}});return m+1;}
+function copy(t,done){function ok(){if(done)done();}function fb(){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(ta);}try{navigator.clipboard.writeText(t).then(ok,fb);}catch(e){fb();}}
+function getPortal(){let p='';try{p=localStorage.getItem(LSP)||'';}catch(e){}return p||PORTAL;}
+/* clave protegida con PIN (PBKDF2 + AES-GCM), guardada solo en este navegador */
+async function pinKey(pin,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
+async function lockKey(jwk,pin){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const k=await pinKey(pin,salt);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},k,new TextEncoder().encode(JSON.stringify(jwk)));localStorage.setItem(LSK,JSON.stringify({s:b64u(salt),i:b64u(iv),c:b64u(ct)}));}
+async function unlockKey(pin){const o=JSON.parse(localStorage.getItem(LSK));const k=await pinKey(pin,unb64u(o.s));const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64u(o.i)},k,unb64u(o.c));return JSON.parse(new TextDecoder().decode(pt));}
+async function useJwk(j){S.priv=await crypto.subtle.importKey('jwk',j,{name:'ECDSA',namedCurve:'P-256'},false,['sign']);const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(j.x+j.y));S.fp=Array.from(new Uint8Array(h)).slice(0,4).map(function(b){return p2(b.toString(16));}).join('');}
+function hasKey(){try{return !!localStorage.getItem(LSK);}catch(e){return false;}}
+function parseKeyText(t){const o=JSON.parse(String(t).trim());const j=o.jwk||o;if(!(j&&j.d&&j.x&&j.y))throw new Error('x');return {kty:'EC',crv:'P-256',x:j.x,y:j.y,d:j.d,ext:true};}
+
+function view(){
+  const a=$('#app');$('#nav').hidden=!S.priv;
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===S.tab);});
+  if(!S.priv){a.innerHTML=hasKey()?lockV():setupV();return;}
+  a.innerHTML=S.tab==='new'?newV():S.tab==='reg'?regV():setV();
+}
+function lockV(){return '<div class="card"><h2>🔒 Desbloquear</h2><p class="mute">Escribe tu PIN para usar la clave guardada en este dispositivo.</p><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN"><button class="cta" data-a="unlock">Desbloquear</button><p class="bad" id="perr">'+esc(S.err)+'</p><details><summary>Olvidé el PIN / quitar la clave de este dispositivo</summary><p class="mute">Esto borra la clave de este dispositivo (no la de tu archivo). Tendrás que importarla de nuevo.</p><button class="btn dng" data-a="forget">Quitar la clave de este dispositivo</button></details></div>';}
+function setupV(){
+  return '<div class="card"><h2>🔑 Poner tu clave en este dispositivo</h2><p class="mute">Solo la primera vez. La clave queda guardada en este navegador, protegida con un PIN que eliges ahora.</p>'+
+  '<span class="lab">Opción A · Elegir el archivo clave_privada_primo.json</span><button class="btn" style="width:100%" data-a="pick">📁 Elegir archivo…</button><input type="file" id="kf" accept=".json,application/json,text/plain,*/*" hidden>'+
+  '<span class="lab">Opción B · Pegar el contenido del archivo</span><textarea id="kt" placeholder="{&quot;tipo&quot;:&quot;clave privada…"></textarea><button class="btn" style="width:100%;margin-top:8px" data-a="paste">Usar este texto</button>'+
+  (S.tmpKey?'<div class="good">✔ Clave leída (huella <b>'+esc(S.tmpFp)+'</b>). Ahora elige un PIN.</div><span class="lab">Elige un PIN (mín. 4 cifras)</span><input id="pin1" type="password" inputmode="numeric" autocomplete="new-password"><span class="lab">Repite el PIN</span><input id="pin2" type="password" inputmode="numeric" autocomplete="new-password"><button class="cta" data-a="savekey">Guardar clave en este dispositivo</button>':'')+
+  '<p class="bad">'+esc(S.err)+'</p>'+
+  '<details><summary>Todavía no tengo clave: crear una nueva</summary><div class="note">Solo si nunca has creado una. Si ya tienes clave, <b>no crees otra</b>: los códigos emitidos con la anterior dejarían de valer cuando se cambie la clave del portal.</div><button class="btn" style="width:100%;margin-top:8px" data-a="mk">Crear clave nueva</button></details></div>';
+}
+function newV(){
+  let h='<div class="card"><h2>Nuevo código de paciente</h2><span class="lab">Cirugía</span><div class="chips">'+SURG.map(function(s){return '<button class="chip'+(S.srg===s[0]?' on':'')+'" data-a="srg" data-v="'+s[0]+'"><b>'+s[1]+'</b><span>'+s[2]+'</span></button>';}).join('')+'</div>'+
+  '<span class="lab">Fecha de la cirugía</span><input type="date" id="dt" value="'+esc(S.date)+'">'+
+  '<span class="lab">Nº de paciente de ese día</span><div class="step"><button data-a="dec">−</button><output>'+S.num+'</output><button data-a="inc">+</button></div>'+
+  '<span class="lab">Validez</span><div class="chips sm">'+[6,12,18,24].map(function(m){return '<button class="chip'+(S.months===m?' on':'')+'" data-a="mo" data-v="'+m+'"><b>'+m+'</b><span>meses</span></button>';}).join('')+'</div>'+
+  '<span class="lab">Nota interna (opcional, sin apellidos)</span><input id="nt" type="text" maxlength="60" autocomplete="off" value="'+esc(S.note)+'">'+
+  '<button class="cta" data-a="gen">Generar código</button><p class="bad">'+esc(S.err)+'</p></div>';
+  if(S.res){const r=S.res;h+='<div class="card" style="border:2px solid var(--accent)"><h2>✅ Código listo</h2><div class="big">'+esc(r.code)+'</div><p class="mute">Válido hasta '+dmy(r.exp)+'</p><button class="btn wa" data-a="wa">💬 Enviar por WhatsApp</button><div class="row">'+(navigator.share?'<button class="btn" data-a="share">Compartir…</button>':'')+'<button class="btn" data-a="clink">Copiar enlace</button><button class="btn" data-a="cmsg">Copiar mensaje</button></div><div class="link">'+esc(r.link)+'</div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';}
+  return h;
+}
+function stat(x){const t=today();if(x.rev)return ['Anulado','p-b'];if(x.exp<t)return ['Caducado','p-b'];if(x.exp<addMonths(t,1))return ['Caduca pronto','p-w'];return ['Activo','p-ok'];}
+function regV(){
+  const r=reg().slice().reverse();
+  let h='<div class="card"><h2>Códigos emitidos ('+r.length+')</h2><p class="mute">Se guarda solo en este dispositivo.</p>';
+  if(!r.length)h+='<p class="mute">Todavía no hay ninguno.</p>';
+  r.forEach(function(x){const s=stat(x);h+='<div class="item"><div class="t"><b'+(x.rev?' style="text-decoration:line-through"':'')+'>'+esc(x.code)+'</b><span class="pill '+s[1]+'">'+s[0]+'</span></div><div class="mute">Emitido '+dmy(x.issued)+' · caduca '+dmy(x.exp)+(x.note?' · '+esc(x.note):'')+'</div><div class="row">'+(x.tok&&!x.rev?'<button class="btn" data-a="resend" data-c="'+esc(x.code)+'">Reenviar</button>':'')+'<button class="btn'+(x.rev?'':' dng')+'" data-a="rev" data-c="'+esc(x.code)+'">'+(x.rev?'Reactivar':'Anular')+'</button></div></div>';});
+  h+='<div class="row"><button class="btn" data-a="csv">Descargar CSV</button></div></div>';
+  const rv=r.filter(function(x){return x.rev;}).map(function(x){return x.code;});
+  h+='<div class="card"><h2>Anulados</h2><p class="mute">Para que un código anulado deje de funcionar, copia esta lista y pásasela a Claude para que la incluya en el portal.</p><div class="link">'+esc(JSON.stringify(rv))+'</div><div class="row"><button class="btn" data-a="crev">Copiar lista de anulados</button></div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';
+  return h;
+}
+function setV(){
+  return '<div class="card"><h2>⚙️ Tu clave</h2><div class="good">🔑 Clave cargada · huella <b>'+esc(S.fp)+'</b><br><span class="mute">Debe ser siempre la misma en todos tus dispositivos.</span></div><div class="row"><button class="btn" data-a="lock">🔒 Bloquear ahora</button><button class="btn dng" data-a="forget">Quitar de este dispositivo</button></div></div>'+
+  '<div class="card"><h2>Dirección del portal</h2><input id="pt" type="url" value="'+esc(getPortal())+'"><div class="row"><button class="btn" data-a="savept">Guardar dirección</button></div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';
+}
+function readTexts(){const d=$('#dt');if(d)S.date=d.value;const n=$('#nt');if(n)S.note=n.value;}
+async function sendMsg(){const r=S.res;return 'Hola. Este es tu acceso personal al portal de rehabilitación completo ('+r.code+'). Ábrelo desde tu móvil tocando este enlace y se activa solo: '+r.link+'\nEs personal e intransferible y es válido hasta el '+dmy(r.exp)+'.';}
+async function act(a,b){
+  readTexts();S.err='';S.msg='';
+  if(a==='pick'){$('#kf').click();return;}
+  if(a==='paste'){try{const j=parseKeyText($('#kt').value);await keyReady(j);}catch(e){S.err='Ese texto no es una clave válida.';view();}return;}
+  if(a==='savekey'){const p1=$('#pin1').value,p2_=$('#pin2').value;if(!/^\d{4,}$/.test(p1)){S.err='El PIN debe tener al menos 4 cifras.';view();return;}if(p1!==p2_){S.err='Los dos PIN no coinciden.';view();return;}await lockKey(S.tmpKey,p1);await useJwk(S.tmpKey);S.tmpKey=null;S.tab='new';S.date=S.date||today();S.num=nextNum();view();return;}
+  if(a==='unlock'){try{const j=await unlockKey($('#pin').value);await useJwk(j);S.date=S.date||today();S.num=nextNum();S.err='';}catch(e){S.err='PIN incorrecto.';}view();return;}
+  if(a==='forget'){if(confirm('¿Quitar la clave de este dispositivo?')){try{localStorage.removeItem(LSK);}catch(e){}S.priv=null;S.fp='';view();}return;}
+  if(a==='lock'){S.priv=null;S.res=null;view();return;}
+  if(a==='mk'){try{const kp=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);const pr=await crypto.subtle.exportKey('jwk',kp.privateKey);const blob=new Blob([JSON.stringify({tipo:'clave privada del portal Primo (NO COMPARTIR)',jwk:pr})],{type:'application/json'});const l=document.createElement('a');l.href=URL.createObjectURL(blob);l.download='clave_privada_primo.json';document.body.appendChild(l);l.click();document.body.removeChild(l);const pb=await crypto.subtle.exportKey('jwk',kp.publicKey);alert('Se ha descargado clave_privada_primo.json. Guárdala y haz una copia. Clave pública para Claude:\n'+JSON.stringify({kty:pb.kty,crv:pb.crv,x:pb.x,y:pb.y,ext:true}));await keyReady(pr);}catch(e){S.err='No se pudo crear la clave en este navegador.';view();}return;}
+  if(a==='srg'){S.srg=b.dataset.v;S.num=nextNum();S.res=null;}
+  else if(a==='mo'){S.months=+b.dataset.v;}
+  else if(a==='inc'){S.num=Math.min(999,S.num+1);}
+  else if(a==='dec'){S.num=Math.max(1,S.num-1);}
+  else if(a==='gen'){await gen();}
+  else if(a==='wa'){const m=await sendMsg();window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');return;}
+  else if(a==='share'){try{await navigator.share({text:await sendMsg()});}catch(e){}return;}
+  else if(a==='clink'){copy(S.res.link,function(){S.msg='Enlace copiado ✓';view();});return;}
+  else if(a==='cmsg'){copy(await sendMsg(),function(){S.msg='Mensaje copiado ✓';view();});return;}
+  else if(a==='resend'){const x=reg().filter(function(y){return y.code===b.dataset.c;})[0];if(x&&x.tok){S.res={code:x.code,exp:x.exp,link:getPortal()+'#p='+x.tok};S.tab='new';}}
+  else if(a==='rev'){const rr=reg();rr.forEach(function(y){if(y.code===b.dataset.c)y.rev=!y.rev;});saveReg(rr);}
+  else if(a==='crev'){copy(JSON.stringify(reg().filter(function(x){return x.rev;}).map(function(x){return x.code;})),function(){S.msg='Lista copiada ✓';view();});return;}
+  else if(a==='csv'){const rows=[['codigo','emitido','caduca','anulado','nota']].concat(reg().map(function(x){return [x.code,x.issued,x.exp,x.rev?'si':'no',(x.note||'').replace(/"/g,'""')];}));const csv=rows.map(function(r){return r.map(function(c){return '"'+c+'"';}).join(',');}).join('\r\n');const l=document.createElement('a');l.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));l.download='registro_codigos_primo.csv';document.body.appendChild(l);l.click();document.body.removeChild(l);return;}
+  else if(a==='savept'){const v=($('#pt').value||'').trim().split('#')[0];if(/^https?:\/\//i.test(v)){try{localStorage.setItem(LSP,v);}catch(e){}S.msg='Dirección guardada ✓';}else S.msg='Debe empezar por https://';}
+  view();
+}
+async function keyReady(j){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(j.x+j.y));S.tmpKey={kty:'EC',crv:'P-256',x:j.x,y:j.y,d:j.d,ext:true};S.tmpFp=Array.from(new Uint8Array(h)).slice(0,4).map(function(b){return p2(b.toString(16));}).join('');S.err='';view();}
+async function gen(){
+  if(!S.date){S.err='Pon la fecha de la cirugía.';return;}
+  const code=codeId(S.srg,S.date,S.num);
+  if(reg().some(function(r){return r.code===code;})){S.err='Ya existe '+code+'. Sube el número de paciente.';return;}
+  const exp=addMonths(today(),S.months),raw=exp.replace(/-/g,'');
+  const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},S.priv,new TextEncoder().encode(code+'|'+raw));
+  const tok=code+'~'+raw+'~'+b64u(sig),link=getPortal().split('#')[0]+'#p='+tok;
+  const r=reg();r.push({code:code,issued:today(),exp:exp,note:S.note.trim(),rev:false,tok:tok});saveReg(r);
+  S.res={code:code,exp:exp,link:link};S.note='';S.num=nextNum();
+}
+document.addEventListener('click',function(e){const b=e.target.closest('[data-a]');if(b){act(b.dataset.a,b);return;}const n=e.target.closest('nav button');if(n){readTexts();S.tab=n.dataset.t;S.msg='';view();}});
+document.addEventListener('change',function(e){if(e.target.id==='kf'){const f=e.target.files[0];if(!f)return;f.text().then(function(t){try{return keyReady(parseKeyText(t));}catch(x){S.err='No se pudo leer ese archivo.';view();}});}if(e.target.id==='dt'){S.date=e.target.value;S.num=nextNum();S.res=null;view();}});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='pin')act('unlock');});
+S.date=today();view();
+</script></body></html>
