@@ -50,7 +50,19 @@ const $=function(s){return document.querySelector(s);};
 const LS='primo-gen-registro-v1',LSK='primo-gen-key-v2',LSP='primo-gen-portal';
 const PORTAL='https://dimaria55.github.io/RHB/';
 const SURG=[['LCA','LCA','Ligamento cruzado'],['PTC','PTC','Prótesis de cadera'],['PTR','PTR','Prótesis de rodilla'],['RAD','RAD','Radio distal'],['MAN','MAN','Manguito rotador']];
-let S={tab:'new',priv:null,fp:'',srg:'LCA',date:'',num:1,months:12,note:'',res:null,err:'',tmpKey:null,msg:''};
+/* Preguntas de quirófano: mismo orden y opciones que en el portal (el código lleva el índice de la opción elegida) */
+const ORQ={
+ LCA:[{k:'graft',lab:'Injerto',o:['Isquiotibiales','Aloinjerto']},{k:'meni',lab:'Sutura meniscal',o:['Sí','No']},{k:'lem',lab:'Lemaire / tenodesis lateral',o:['Sí','No']}],
+ PTC:[{k:'fij',lab:'Fijación',o:['No cementada','Cementada']},{k:'carga',lab:'Apoyo',o:['Según tolere','Parcial']},{k:'prec',lab:'Precauciones de cadera 6 sem.',o:['Sí','No']}],
+ RAD:[{k:'rama',lab:'Tratamiento',o:['Yeso','Placa simple','Placa compleja','Fijador externo']},{k:'arcd',lab:'Aguja + yeso hasta el codo 4 sem.',o:['Sí','No'],when:function(v){return v.rama!==undefined&&v.rama!==0;}}],
+ MAN:[{k:'mt',lab:'Rotura supraespinoso',o:['Pequeña o mediana','Completa']},{k:'ms',lab:'Subescapular',o:['No reparado','Parcial','Completo']},{k:'mb',lab:'Bíceps',o:['Nada','Tenodesis','Tenotomía']},{k:'ma',lab:'Acromioplastia',o:['Sí','No']}],
+ PTR:[{k:'edad',lab:'Edad',o:['Menos de 65','65 o más']}]
+};
+function orVis(f,v){return !f.when||f.when(v);}
+function orDone(){const F=ORQ[S.srg]||[];return F.length&&F.every(function(f){return !orVis(f,S.orv)||S.orv[f.k]!==undefined;});}
+function orStr(){return (ORQ[S.srg]||[]).map(function(f){return orVis(f,S.orv)?String(S.orv[f.k]):'x';}).join('');}
+function orTxt(){return (ORQ[S.srg]||[]).filter(function(f){return orVis(f,S.orv);}).map(function(f){return f.lab+': '+f.o[S.orv[f.k]];}).join(' · ');}
+let S={orOn:false,orv:{},tab:'new',priv:null,fp:'',srg:'LCA',date:'',num:1,months:12,note:'',res:null,err:'',tmpKey:null,msg:''};
 function p2(n){return (n<10?'0':'')+n;}
 function today(){const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
 function dmy(i){const p=i.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
@@ -89,12 +101,20 @@ function setupV(){
 }
 function newV(){
   let h='<div class="card"><h2>Nuevo código de paciente</h2><span class="lab">Cirugía</span><div class="chips">'+SURG.map(function(s){return '<button class="chip'+(S.srg===s[0]?' on':'')+'" data-a="srg" data-v="'+s[0]+'"><b>'+s[1]+'</b><span>'+s[2]+'</span></button>';}).join('')+'</div>'+
-  '<span class="lab">Fecha de la cirugía</span><input type="date" id="dt" value="'+esc(S.date)+'">'+
+  '<span class="lab">Fecha de la cirugía</span><input type="date" id="dt" value="'+esc(S.date)+'">'+orBlock()+
   '<span class="lab">Nº de paciente de ese día</span><div class="step"><button data-a="dec">−</button><output>'+S.num+'</output><button data-a="inc">+</button></div>'+
   '<span class="lab">Validez</span><div class="chips sm">'+[6,12,18,24].map(function(m){return '<button class="chip'+(S.months===m?' on':'')+'" data-a="mo" data-v="'+m+'"><b>'+m+'</b><span>meses</span></button>';}).join('')+'</div>'+
   '<span class="lab">Nota interna (opcional, sin apellidos)</span><input id="nt" type="text" maxlength="60" autocomplete="off" value="'+esc(S.note)+'">'+
   '<button class="cta" data-a="gen">Generar código</button><p class="bad">'+esc(S.err)+'</p></div>';
-  if(S.res){const r=S.res;h+='<div class="card" style="border:2px solid var(--accent)"><h2>✅ Código listo</h2><div class="big">'+esc(r.code)+'</div><p class="mute">Válido hasta '+dmy(r.exp)+'</p><button class="btn wa" data-a="wa">💬 Enviar por WhatsApp</button><div class="row">'+(navigator.share?'<button class="btn" data-a="share">Compartir…</button>':'')+'<button class="btn" data-a="clink">Copiar enlace</button><button class="btn" data-a="cmsg">Copiar mensaje</button></div><div class="link">'+esc(r.link)+'</div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';}
+  if(S.res){const r=S.res;h+='<div class="card" style="border:2px solid var(--accent)"><h2>✅ Código listo</h2><div class="big">'+esc(r.code)+'</div><p class="mute">Válido hasta '+dmy(r.exp)+'</p>'+(r.det?'<p class="mute">🏥 '+esc(r.det)+'</p>':'')+'<button class="btn wa" data-a="wa">💬 Enviar por WhatsApp</button><div class="row">'+(navigator.share?'<button class="btn" data-a="share">Compartir…</button>':'')+'<button class="btn" data-a="clink">Copiar enlace</button><button class="btn" data-a="cmsg">Copiar mensaje</button></div><div class="link">'+esc(r.link)+'</div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';}
+  return h;
+}
+function orBlock(){
+  let h='<span class="lab">Datos de quirófano</span><div class="chips sm"><button class="chip'+(S.orOn?'':' on')+'" data-a="oroff"><b>No</b><span>los marca el paciente</span></button><button class="chip'+(S.orOn?' on':'')+'" data-a="oron"><b>Sí</b><span>los indico yo</span></button></div>';
+  if(!S.orOn)return h;
+  (ORQ[S.srg]||[]).forEach(function(f){if(!orVis(f,S.orv))return;
+    h+='<span class="lab" style="margin-top:12px">'+esc(f.lab)+'</span><div class="chips sm">'+f.o.map(function(t,i){return '<button class="chip'+(S.orv[f.k]===i?' on':'')+'" data-a="orv" data-k="'+f.k+'" data-i="'+i+'"><b style="font-size:.9rem">'+esc(t)+'</b></button>';}).join('')+'</div>';});
+  h+=orDone()?'<div class="good">✔ El paciente no tendrá que marcar nada en quirófano.</div>':'<p class="mute" style="margin-top:10px">Completa todas las preguntas para poder generar el código.</p>';
   return h;
 }
 function stat(x){const t=today();if(x.rev)return ['Anulado','p-b'];if(x.exp<t)return ['Caducado','p-b'];if(x.exp<addMonths(t,1))return ['Caduca pronto','p-w'];return ['Activo','p-ok'];}
@@ -102,7 +122,7 @@ function regV(){
   const r=reg().slice().reverse();
   let h='<div class="card"><h2>Códigos emitidos ('+r.length+')</h2><p class="mute">Se guarda solo en este dispositivo.</p>';
   if(!r.length)h+='<p class="mute">Todavía no hay ninguno.</p>';
-  r.forEach(function(x){const s=stat(x);h+='<div class="item"><div class="t"><b'+(x.rev?' style="text-decoration:line-through"':'')+'>'+esc(x.code)+'</b><span class="pill '+s[1]+'">'+s[0]+'</span></div><div class="mute">Emitido '+dmy(x.issued)+' · caduca '+dmy(x.exp)+(x.note?' · '+esc(x.note):'')+'</div><div class="row">'+(x.tok&&!x.rev?'<button class="btn" data-a="resend" data-c="'+esc(x.code)+'">Reenviar</button>':'')+'<button class="btn'+(x.rev?'':' dng')+'" data-a="rev" data-c="'+esc(x.code)+'">'+(x.rev?'Reactivar':'Anular')+'</button></div></div>';});
+  r.forEach(function(x){const s=stat(x);h+='<div class="item"><div class="t"><b'+(x.rev?' style="text-decoration:line-through"':'')+'>'+esc(x.code)+'</b><span class="pill '+s[1]+'">'+s[0]+'</span></div><div class="mute">Emitido '+dmy(x.issued)+' · caduca '+dmy(x.exp)+(x.note?' · '+esc(x.note):'')+'</div>'+(x.det?'<div class="mute">🏥 '+esc(x.det)+'</div>':'')+'<div class="row">'+(x.tok&&!x.rev?'<button class="btn" data-a="resend" data-c="'+esc(x.code)+'">Reenviar</button>':'')+'<button class="btn'+(x.rev?'':' dng')+'" data-a="rev" data-c="'+esc(x.code)+'">'+(x.rev?'Reactivar':'Anular')+'</button></div></div>';});
   h+='<div class="row"><button class="btn" data-a="csv">Descargar CSV</button></div></div>';
   const rv=r.filter(function(x){return x.rev;}).map(function(x){return x.code;});
   h+='<div class="card"><h2>Anulados</h2><p class="mute">Para que un código anulado deje de funcionar, copia esta lista y pásasela a Claude para que la incluya en el portal.</p><div class="link">'+esc(JSON.stringify(rv))+'</div><div class="row"><button class="btn" data-a="crev">Copiar lista de anulados</button></div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';
@@ -123,7 +143,10 @@ async function act(a,b){
   if(a==='forget'){if(confirm('¿Quitar la clave de este dispositivo?')){try{localStorage.removeItem(LSK);}catch(e){}S.priv=null;S.fp='';view();}return;}
   if(a==='lock'){S.priv=null;S.res=null;view();return;}
   if(a==='mk'){try{const kp=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);const pr=await crypto.subtle.exportKey('jwk',kp.privateKey);const blob=new Blob([JSON.stringify({tipo:'clave privada del portal Primo (NO COMPARTIR)',jwk:pr})],{type:'application/json'});const l=document.createElement('a');l.href=URL.createObjectURL(blob);l.download='clave_privada_primo.json';document.body.appendChild(l);l.click();document.body.removeChild(l);const pb=await crypto.subtle.exportKey('jwk',kp.publicKey);alert('Se ha descargado clave_privada_primo.json. Guárdala y haz una copia. Clave pública para Claude:\n'+JSON.stringify({kty:pb.kty,crv:pb.crv,x:pb.x,y:pb.y,ext:true}));await keyReady(pr);}catch(e){S.err='No se pudo crear la clave en este navegador.';view();}return;}
-  if(a==='srg'){S.srg=b.dataset.v;S.num=nextNum();S.res=null;}
+  if(a==='srg'){S.srg=b.dataset.v;S.orv={};S.num=nextNum();S.res=null;}
+  else if(a==='oron'){S.orOn=true;S.res=null;}
+  else if(a==='oroff'){S.orOn=false;S.res=null;}
+  else if(a==='orv'){S.orv[b.dataset.k]=+b.dataset.i;const F=ORQ[S.srg];F.forEach(function(f){if(!orVis(f,S.orv))delete S.orv[f.k];});S.res=null;}
   else if(a==='mo'){S.months=+b.dataset.v;}
   else if(a==='inc'){S.num=Math.min(999,S.num+1);}
   else if(a==='dec'){S.num=Math.max(1,S.num-1);}
@@ -144,11 +167,12 @@ async function gen(){
   if(!S.date){S.err='Pon la fecha de la cirugía.';return;}
   const code=codeId(S.srg,S.date,S.num);
   if(reg().some(function(r){return r.code===code;})){S.err='Ya existe '+code+'. Sube el número de paciente.';return;}
-  const exp=addMonths(today(),S.months),raw=exp.replace(/-/g,'');
-  const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},S.priv,new TextEncoder().encode(code+'|'+raw));
-  const tok=code+'~'+raw+'~'+b64u(sig),link=getPortal().split('#')[0]+'#p='+tok;
-  const r=reg();r.push({code:code,issued:today(),exp:exp,note:S.note.trim(),rev:false,tok:tok});saveReg(r);
-  S.res={code:code,exp:exp,link:link};S.note='';S.num=nextNum();
+  if(S.orOn&&!orDone()){S.err='Completa los datos de quirófano o marca «No».';return;}
+  const exp=addMonths(today(),S.months),raw=exp.replace(/-/g,''),ors=S.orOn?orStr():'';
+  const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},S.priv,new TextEncoder().encode(code+'|'+raw+(ors?'|'+ors:'')));
+  const tok=code+'~'+raw+(ors?'~'+ors:'')+'~'+b64u(sig),link=getPortal().split('#')[0]+'#p='+tok;
+  const r=reg();r.push({code:code,issued:today(),exp:exp,note:S.note.trim(),rev:false,tok:tok,det:S.orOn?orTxt():''});saveReg(r);
+  S.res={code:code,exp:exp,link:link,det:S.orOn?orTxt():''};S.note='';S.num=nextNum();
 }
 document.addEventListener('click',function(e){const b=e.target.closest('[data-a]');if(b){act(b.dataset.a,b);return;}const n=e.target.closest('nav button');if(n){readTexts();S.tab=n.dataset.t;S.msg='';view();}});
 document.addEventListener('change',function(e){if(e.target.id==='kf'){const f=e.target.files[0];if(!f)return;f.text().then(function(t){try{return keyReady(parseKeyText(t));}catch(x){S.err='No se pudo leer ese archivo.';view();}});}if(e.target.id==='dt'){S.date=e.target.value;S.num=nextNum();S.res=null;view();}});

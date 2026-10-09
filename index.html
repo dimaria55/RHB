@@ -4250,7 +4250,7 @@ function pfLoad(){
   try{const o=JSON.parse(localStorage.getItem(PFKEY)||'null');
     if(o&&typeof o.name==='string'&&o.name.trim()&&SURG_K.indexOf(o.surg)>=0){
       const p={name:o.name.trim().slice(0,30),surg:o.surg,or:null,created:typeof o.created==='string'?o.created:''};
-      if(o.or&&o.or.v&&typeof o.or.v==='object')p.or={v:o.or.v,at:String(o.or.at||''),fix:o.or.fix===1?1:0};
+      if(o.or&&o.or.v&&typeof o.or.v==='object')p.or={v:o.or.v,at:String(o.or.at||''),fix:o.or.fix===1?1:0,doc:o.or.doc===1?1:0};
       state.prof=p;}else state.prof=null;
   }catch(e){state.prof=null;}
   try{state.docOK=sessionStorage.getItem(DOCKEY)==='1';}catch(e){state.docOK=false;}
@@ -4292,7 +4292,8 @@ function orFormHtml(){
 function orSummaryHtml(){
   const p=state.prof,v=p.or.v;
   let h='<ul class="orsum">'+orFields().filter(function(f){return orVisible(f,v);}).map(function(f){return '<li><span>'+tr(f.lab)+'</span><b>'+tr(orValTxt(f,v[f.k]))+'</b></li>';}).join('')+'</ul>';
-  if(p.or.fix<1)h+='<p style="margin-top:10px"><button class="ghost" data-act="pforfix">'+tr('Corregir (solo una vez)')+'</button></p>';
+  if(p.or.doc)h+='<p class="src" style="margin-top:8px">'+tr('Estos datos los ha indicado tu cirujano.')+'</p>';
+  else if(p.or.fix<1)h+='<p style="margin-top:10px"><button class="ghost" data-act="pforfix">'+tr('Corregir (solo una vez)')+'</button></p>';
   else h+='<p class="src" style="margin-top:8px">'+tr('Ya has usado tu corrección. Si algo no es correcto, coméntalo con tu cirujano en la consulta.')+'</p>';
   return h;
 }
@@ -4324,7 +4325,7 @@ function profileHtml(){
 }
 function landingHtml(){
   const pp=state.premPending,d=pp?{name:(state.reg||{}).name||'',surg:pp.srg,date:pp.date}:(state.reg||{});
-  let h=premBanner()+(pp?'<section class="panel" style="border:2px solid var(--accent)"><div class="kick">⭐ Premium</div><h2>'+tr('Código Premium detectado')+'</h2><p style="margin-top:8px"><b>'+pfEsc(pp.code)+'</b><br>'+tr(SURG_N[pp.srg])+' · '+tr('cirugía')+' '+fullDate(pp.date)+'</p><p class="src" style="margin-top:8px">'+tr('Solo falta tu nombre de pila. La cirugía y la fecha vienen de tu código y no se pueden cambiar.')+'</p><p style="margin-top:6px"><button class="linkish" data-act="pfpremno">'+tr('Quitar este código')+'</button></p></section>':'<section class="panel" id="premBox"><div class="kick">⭐ Premium</div><h2>'+tr('¿Tienes un código Premium?')+'</h2><p class="src" style="margin-top:8px">'+tr('Pega aquí el enlace o el código que te dio la consulta. Se rellenarán tu cirugía y la fecha.')+'</p><label class="fld" style="margin-top:10px"><span class="lab">'+tr('Código o enlace Premium')+'</span><input type="text" id="regPrem" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+pfEsc(state.premTxt||'')+'"></label><p style="margin-top:10px"><button class="ghost" data-act="pfprem">'+(state.premBusy?tr('Comprobando…'):tr('Comprobar código'))+'</button></p></section>')+'<section class="panel hero-l"><div class="kick">'+tr('Bienvenido/a')+'</div><h2>'+tr('Tu rehabilitación, paso a paso')+'</h2>'+
+  let h=premBanner()+(pp?'<section class="panel" style="border:2px solid var(--accent)"><div class="kick">⭐ Premium</div><h2>'+tr('Código Premium detectado')+'</h2><p style="margin-top:8px"><b>'+pfEsc(pp.code)+'</b><br>'+tr(SURG_N[pp.srg])+' · '+tr('cirugía')+' '+fullDate(pp.date)+'</p>'+(pp.or?'<p class="src" style="margin-top:8px">✔ '+tr('Tu cirujano ya ha indicado lo que te hicieron en quirófano.')+'</p>':'')+'<p class="src" style="margin-top:8px">'+tr('Solo falta tu nombre de pila. La cirugía y la fecha vienen de tu código y no se pueden cambiar.')+'</p><p style="margin-top:6px"><button class="linkish" data-act="pfpremno">'+tr('Quitar este código')+'</button></p></section>':'<section class="panel" id="premBox"><div class="kick">⭐ Premium</div><h2>'+tr('¿Tienes un código Premium?')+'</h2><p class="src" style="margin-top:8px">'+tr('Pega aquí el enlace o el código que te dio la consulta. Se rellenarán tu cirugía y la fecha.')+'</p><label class="fld" style="margin-top:10px"><span class="lab">'+tr('Código o enlace Premium')+'</span><input type="text" id="regPrem" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+pfEsc(state.premTxt||'')+'"></label><p style="margin-top:10px"><button class="ghost" data-act="pfprem">'+(state.premBusy?tr('Comprobando…'):tr('Comprobar código'))+'</button></p></section>')+'<section class="panel hero-l"><div class="kick">'+tr('Bienvenido/a')+'</div><h2>'+tr('Tu rehabilitación, paso a paso')+'</h2>'+
    '<p class="lead" style="margin-top:10px">'+tr('Portal de la consulta del Dr. De María Prieto para pacientes que se operan de rodilla, cadera, hombro o muñeca. Te acompaña antes y después de la cirugía con ejercicios, avisos y el seguimiento de tu recuperación.')+'</p>'+
    '<ol class="steps-l"><li><b>'+tr('Crea tu perfil.')+'</b> '+tr('Solo tu nombre de pila y tu cirugía.')+'</li><li><b>'+tr('Prepárate antes de operarte.')+'</b> '+tr('La parte PRE-Cirugía está disponible aunque todavía no sepas la fecha.')+'</li><li><b>'+tr('El día de la cirugía,')+'</b> '+tr('indica lo que te hicieron en quirófano y el portal adapta tu plan.')+'</li></ol></section>';
   h+='<section class="panel" id="regForm"><div class="kick">'+tr('Empezar')+'</div><h2>'+tr('Crea tu perfil')+'</h2>'+
@@ -4437,17 +4438,30 @@ const PREMKEY='pc-dr-dmp-prem-v1',PREMKEY2='pc-dr-dmp-prem-v2';
 const PREM_SRG={LCA:'lca',PTC:'ptc',RAD:'radio',MAN:'manguito',PTR:'ptr'};
 const PREM_MSG={format:'El código no tiene el formato correcto. Copia el enlace o el código completo tal como te lo enviaron.',sig:'El código no es válido.',expired:'Este código ha caducado. Pide uno nuevo a tu equipo.',revoked:'Este código ha sido anulado. Contacta con tu equipo.',surg:'Este código es de otra cirugía distinta a la de tu perfil.',nokey:'Este portal aún no admite códigos personales. Avisa a tu equipo.',nocrypto:'Este navegador no puede comprobar el código. Prueba con Chrome, Safari o Edge actualizados.',legacy:'Código no válido. Revisa que lo has escrito igual que te lo dieron.'};
 function premB64(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+/* datos de quirófano indicados por el cirujano: una cifra por pregunta (índice de la opción) o x si no aplica */
+function premOrDecode(srg,str){
+  const F=OR_F[srg]||[];if(str.length!==F.length)return null;
+  const v={};
+  for(let i=0;i<F.length;i++){
+    const f=F[i],ch=str[i],vis=!f.when||f.when(v);
+    if(!vis){if(ch!=='x')return null;continue;}
+    if(ch==='x')return null;const o=f.opts[+ch];if(!o)return null;v[f.k]=o[0];
+  }
+  return v;
+}
 function premParse(tok){
   tok=String(tok||'').trim();const h=tok.indexOf('#p=');if(h>=0)tok=tok.slice(h+3);
   tok=tok.replace(/\s+/g,'');
-  const m=/^(P-([A-Z]{3})-(\d{2})(\d{2})(\d{2})-(\d{1,4}))~(\d{4})(\d{2})(\d{2})~([A-Za-z0-9_-]{86})$/.exec(tok);if(!m)return null;
+  const m=/^(P-([A-Z]{3})-(\d{2})(\d{2})(\d{2})-(\d{1,4}))~(\d{4})(\d{2})(\d{2})(?:~([0-9x]{1,8}))?~([A-Za-z0-9_-]{86})$/.exec(tok);if(!m)return null;
   const srg=PREM_SRG[m[2]];if(!srg)return null;
   const dd=+m[3],mm=+m[4],yy=2000+(+m[5]);const sd=new Date(Date.UTC(yy,mm-1,dd));
   if(sd.getUTCFullYear()!==yy||sd.getUTCMonth()!==mm-1||sd.getUTCDate()!==dd)return null;
   const ey=+m[7],em=+m[8],ed=+m[9];const xd=new Date(Date.UTC(ey,em-1,ed));
   if(xd.getUTCFullYear()!==ey||xd.getUTCMonth()!==em-1||xd.getUTCDate()!==ed)return null;
   const p2=function(n){return (n<10?'0':'')+n;};
-  return {tok:tok,code:m[1],srg:srg,date:yy+'-'+p2(mm)+'-'+p2(dd),exp:ey+'-'+p2(em)+'-'+p2(ed),expRaw:m[7]+m[8]+m[9],sig:m[10]};
+  let orv=null;
+  if(m[10]){orv=premOrDecode(srg,m[10]);if(!orv)return null;}
+  return {tok:tok,code:m[1],srg:srg,date:yy+'-'+p2(mm)+'-'+p2(dd),exp:ey+'-'+p2(em)+'-'+p2(ed),expRaw:m[7]+m[8]+m[9],orRaw:m[10]||'',or:orv,sig:m[11]};
 }
 function premCheckLocal(r){if(PREM_REVOKED.indexOf(r.code)>=0)return 'revoked';if(r.exp<todayISO())return 'expired';return '';}
 async function premCheck(tok){
@@ -4457,7 +4471,7 @@ async function premCheck(tok){
   try{
     if(!(window.crypto&&crypto.subtle))return {ok:false,reason:'nocrypto'};
     const key=await crypto.subtle.importKey('jwk',PREM_PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
-    const ok=await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,premB64(r.sig),new TextEncoder().encode(r.code+'|'+r.expRaw));
+    const ok=await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,premB64(r.sig),new TextEncoder().encode(r.code+'|'+r.expRaw+(r.orRaw?'|'+r.orRaw:'')));
     return ok?{ok:true,rec:r}:{ok:false,reason:'sig'};
   }catch(e){return {ok:false,reason:'sig'};}
 }
@@ -4467,7 +4481,9 @@ function premClear(){try{localStorage.removeItem(PREMKEY2);localStorage.removeIt
 function premApply(r){
   if(state.prof&&state.prof.surg!==r.srg)return 'surg';
   state.premInfo={code:r.code,srg:r.srg,date:r.date,exp:r.exp};state.premReal=true;state.premium=true;
-  state.date=r.date;premStore(r.tok);save();return 'ok';
+  state.date=r.date;premStore(r.tok);
+  if(r.or&&state.prof){state.prof.or={v:Object.assign({},r.or),at:todayISO(),fix:1,doc:1};pfSave();orApply(r.or);}
+  save();return 'ok';
 }
 function premLoad(){
   state.premReal=false;state.premInfo=null;
