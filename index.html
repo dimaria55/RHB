@@ -339,8 +339,21 @@ body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
 body.landing header,body.landing #foot{display:none}
-body.landing .wrap{display:flex;flex-direction:column}
-body.landing .topbar{order:99;margin:30px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 18px}
+@media(min-width:620px){.apps{grid-template-columns:repeat(4,1fr)}}
+.app{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1;font:inherit;border:0;border-radius:22px;cursor:pointer;color:hsl(var(--h) 62% 28%);background:hsl(var(--h) 60% 92%);padding:8px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 6px 14px -8px hsl(var(--h) 60% 30% / .5)}
+.app:active{transform:scale(.97)}
+.app-ic{position:relative;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:hsl(var(--h) 60% 85%)}
+.app-ic .dot{position:absolute;top:-3px;right:-3px}
+.app-n{font:600 .82rem/1.15 var(--font-body);text-align:center;color:var(--ink)}
+.appbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;background:var(--bg);padding:8px 0 10px;margin-bottom:6px}
+.appback{font:600 .95rem var(--font-body);color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;padding:9px 16px;cursor:pointer;min-height:40px}
+.appbar b{font:600 1.05rem var(--font-display)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .app{color:hsl(var(--h) 70% 78%);background:hsl(var(--h) 35% 20%)}:root:not([data-theme="light"]) .app-ic{background:hsl(var(--h) 35% 28%)}}
+:root[data-theme="dark"] .app{color:hsl(var(--h) 70% 78%);background:hsl(var(--h) 35% 20%)}
+:root[data-theme="dark"] .app-ic{background:hsl(var(--h) 35% 28%)}
+body.pat .wrap{display:flex;flex-direction:column}
+body.pat .topbar{order:99;margin:30px 0 0;padding-top:14px;border-top:1px solid var(--line)}
 body.landing .controls{display:none}
 .ld-hero{position:relative;overflow:hidden;border-radius:18px;margin-top:6px;color:#fff;background:linear-gradient(165deg,#0b3f57 0%,#0a5c7a 55%,#2a8aa6 100%);isolation:isolate}
 .ld-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
@@ -2826,7 +2839,8 @@ SURG.ptr={stages:STAGES_PTR,risks:RISKS_PTR,sources:SOURCES_PTR,pending:PENDING_
 function allRefsHtml(){
   const esc=function(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
   const G=[['Reconstrucción del LCA',SOURCES_LCA,null],['Prótesis total de cadera',SOURCES_PTC,null],['Fractura de radio distal',SOURCES_RADIO,CITES_RADIO],['Reparación del manguito rotador',SOURCES_MAN,null],['Prótesis total de rodilla',SOURCES_PTR,null]];
-  return '<details><summary>Referencias bibliográficas</summary>'+G.map(function(g){
+  const SEL={lca:0,ptc:1,radio:2,manguito:3,ptr:4},cur=G[SEL[state.surg]];
+  return '<details><summary>Referencias bibliográficas</summary>'+(cur?[cur]:G).map(function(g){
     return '<h4>'+g[0]+'</h4><ul>'+g[1].map(function(s){
       const c=s[3]||(g[2]&&g[2][s[0]]);const t=c?esc(c):esc(s[0]);
       return '<li>'+(s[2]?'<a href="'+s[2]+'" target="_blank" rel="noopener">'+t+'</a>':t)+'</li>';}).join('')+'</ul>';}).join('')+'</details>';
@@ -3188,7 +3202,7 @@ function testCard(t,wk){
   const lockedWk=!doc()&&wk!==null&&wk<t.from;
   const mine=wk!==null&&wk>=t.from&&(t.to!==undefined?(t.to===null||wk<=t.to):(t.id==='stst'?wk<=3:t.id==='mono'?wk<=6:true));
   const m=tMarks(t.id),last=m[m.length-1],open=state.unlock[t.id]===todayISO();
-  const lk=progLocked(),inf=(!lk&&!lockedWk&&state.rinfo&&state.rinfo[t.id])||'';
+  const lk=progLocked()&&t.from>2,inf=(!lk&&!lockedWk&&state.rinfo&&state.rinfo[t.id])||'';
   let h='<section class="panel test" id="test-'+t.id+'"><div class="meta"><span class="chip d">'+tr(t.wk)+'</span>'+(mine&&!lk?'<span class="chip v">'+tr('Le toca ahora')+'</span>':'')+(lk?'<span class="chip prem">Premium</span>':'')+'</div>'+
     '<h2 style="font-size:1.1rem;margin-top:8px">'+tr(t.name)+'</h2>';
   h+='<div class="rbox">';
@@ -3487,7 +3501,7 @@ function progresoView(){
   h+='</section>';
   h+='<div class="psub"><div class="seg" role="group" aria-label="Secciones de Mi Progreso">'+[['retos','Retos'],['cuestionario','Cuestionarios'],['historial','Mi historial']].map(function(p){return '<button data-act="ptab" data-p="'+p[0]+'" aria-pressed="'+(state.ptab===p[0])+'">'+tr(p[1])+'</button>';}).join('')+'</div></div>';
   if(state.pmsg)h+='<div class="note '+state.pmsgKind+'" role="status" id="pmsg">'+state.pmsg+'</div>';
-  if(state.ptab!=='cuestionario'&&!doc()){const md=monthlyDue(),wd=state.surg==='ptc'&&dueInfo('pro').due;if(md.length||wd)h+='<div class="note warn" role="status"><b>'+tr(md.length?'Evaluación mensual disponible':'Cuestionario semanal disponible')+'</b>: '+(md.length?md.map(function(k){return MONTHLY[k].name;}).join(' · '):'')+' <button class="ghost" style="margin-left:6px" data-act="ptab" data-p="cuestionario">'+tr('Ir a cuestionarios')+'</button></div>';}
+  if(state.ptab!=='cuestionario'&&!doc()&&!progLocked()){const md=monthlyDue(),wd=state.surg==='ptc'&&dueInfo('pro').due;if(md.length||wd)h+='<div class="note warn" role="status"><b>'+tr(md.length?'Evaluación mensual disponible':'Cuestionario semanal disponible')+'</b>: '+(md.length?md.map(function(k){return MONTHLY[k].name;}).join(' · '):'')+' <button class="ghost" style="margin-left:6px" data-act="ptab" data-p="cuestionario">'+tr('Ir a cuestionarios')+'</button></div>';}
   if(progLocked()&&state.ptab!=='retos'){state.qopen=null;return h+'<section class="panel"><p class="src">🔒 '+tr('Los cuestionarios, el registro semanal y tu historial forman parte del acceso Premium. Tu equipo te enviará un enlace personal para activarlo.')+'</p></section>'+(state.surg==='lca'?lcaBanner():'');}
   h+=state.ptab==='cuestionario'?pCuest():state.ptab==='historial'?pHist():pRetos();
   return h;
@@ -4351,7 +4365,7 @@ function orSummaryHtml(){
 }
 /* Tarjeta de quirófano al principio de Inicio cuando toca rellenarla */
 function orTopHtml(){
-  if(state.docOK||!state.prof)return '';
+  if(state.docOK||!state.prof||!state.premium)return '';
   if(state.orEdit)return orFormHtml();
   const si=stageInfo();
   if(!state.prof.or&&si&&si.d>=0)return orFormHtml();
@@ -4364,11 +4378,13 @@ function profileHtml(){
   if(state.pfName)h+='<div class="pfrow"><label class="fld" style="flex:1"><span class="lab">'+tr('Nombre de pila')+'</span><input type="text" id="pfNameEd" maxlength="30" autocomplete="given-name" value="'+pfEsc(p.name)+'"></label><button class="cta" data-act="pfnamesave">'+tr('Guardar')+'</button><button class="ghost" data-act="pfnamecancel">'+tr('Cancelar')+'</button></div>';
   else h+='<h2>'+pfEsc(p.name)+' <button class="linkish" data-act="pfname">'+tr('Cambiar nombre')+'</button></h2>';
   h+='<dl class="pfdl"><div><dt>'+tr('Cirugía')+'</dt><dd>'+tr(SURG_N[p.surg])+'</dd></div><div><dt>'+tr('Fecha de la cirugía')+'</dt><dd>'+(state.date?fullDate(state.date):tr('Aún sin fecha. Puedes ponerla arriba, junto a «Cirugía», cuando la sepas.'))+'</dd></div>'+(state.premInfo?'<div><dt>Premium</dt><dd>'+pfEsc(state.premInfo.code)+' · '+tr('activo hasta')+' '+fullDate(state.premInfo.exp)+'</dd></div>':'')+'</dl>';
+  if(state.premium){
   h+='<h3 style="margin-top:16px">'+tr('Lo que te hicieron en quirófano')+'</h3>';
   if(p.or)h+=orSummaryHtml();
   else if(si&&si.d>=0)h+='<p class="src" style="margin-top:6px">'+tr('Pendiente: rellénalo en la tarjeta de arriba.')+'</p>';
   else if(si)h+='<p class="src" style="margin-top:6px">'+tr('El día de tu cirugía')+' ('+fullDate(state.date)+') '+tr('podrás indicar aquí lo que te hicieron. Hasta entonces, ve preparándote con la parte PRE-Cirugía.')+'</p>';
   else h+='<p class="src" style="margin-top:6px">'+tr('Cuando te operes, pon la fecha arriba y podrás indicar aquí lo que te hicieron. Mientras tanto, puedes preparar la parte PRE-Cirugía.')+'</p>';
+  }
   h+='<div class="pfdel">';
   if(state.pfDel)h+='<p class="note warn">'+tr('Se borrarán de este dispositivo tu perfil, tus marcas, cuestionarios, logros y el acceso premium. No se puede deshacer.')+'</p><p style="margin-top:8px"><button class="danger" data-act="pfdelyes">'+tr('Sí, borrar todo')+'</button> <button class="ghost" data-act="pfdelno">'+tr('Cancelar')+'</button></p>';
   else h+='<button class="linkish" data-act="pfdel">'+tr('Borrar mi perfil de este dispositivo')+'</button>';
@@ -4620,6 +4636,18 @@ function premBanner(){
 }
 
 loadProg();loadAch();premLoad();
+function visTabs(){return TABS.filter(function(t){return (t[0]!=='fuentes'||doc())&&(t[0]!=='progreso'||state.surg==='ptc'||state.surg==='lca')&&(t[0]!=='logros'||state.surg==='lca')&&(t[0]!=='informes'||state.surg==='lca')&&(t[0]!=='faq'||state.surg==='lca');});}
+const APPI={etapas:'<path d="M4 19h5v-5h5V9h6"/><path d="M4 19V5"/>',ejercicios:'<path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"/>',progreso:'<path d="M4 20V4M4 20h16"/><path d="M7.5 15l3.5-4 3 2.5 4.5-6"/>',logros:'<circle cx="12" cy="9" r="5"/><path d="M9 13.5 7.5 21l4.5-2.5 4.5 2.5L15 13.5"/>',informes:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',riesgos:'<path d="M12 3.5 21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".7" fill="currentColor"/>',faq:'<path d="M4 5.5h16v10H12l-4.5 3.5v-3.5H4z"/><path d="M8 9.5h8M8 12.5h5"/>',fuentes:'<path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/>'};
+const APPH={etapas:190,ejercicios:140,progreso:215,logros:38,informes:265,riesgos:6,faq:170,fuentes:30};
+function appTilesHtml(){
+  return '<section class="apps" aria-label="'+tr('Secciones')+'">'+visTabs().filter(function(t){return t[0]!=='inicio';}).map(function(t){
+    const dot=t[0]==='progreso'&&!progLocked()&&pendingCount();
+    return '<button class="app" style="--h:'+(APPH[t[0]]||200)+'" data-act="tab" data-t="'+t[0]+'"><span class="app-ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(APPI[t[0]]||'')+'</svg>'+(dot?'<span class="dot" role="img" aria-label="Evaluación pendiente"></span>':'')+'</span><span class="app-n">'+u(t[1])+'</span></button>';}).join('')+'</section>';
+}
+function appBackHtml(){
+  const cur=TABS.filter(function(t){return t[0]===state.tab;})[0];
+  return '<div class="appbar"><button class="appback" data-act="tab" data-t="inicio">‹ '+u('tInicio')+'</button><b>'+(cur?u(cur[1]):'')+'</b></div>';
+}
 const TABS=[['inicio','tInicio'],['etapas','tEtapas'],['ejercicios','tEjercicios'],['progreso','tProgreso'],['logros','tLogros'],['informes','tInformes'],['riesgos','tRiesgos'],['faq','tFaq'],['fuentes','tFuentes']];
 
 function render(){
@@ -4653,11 +4681,13 @@ function render(){
   $('#prec').checked=state.prec;$('#prem').checked=!!state.premium;
   document.documentElement.lang='es';
   applyA11y();
-  $('#tabs').innerHTML=TABS.filter(function(t){return (t[0]!=='fuentes'||doc())&&(t[0]!=='progreso'||state.surg==='ptc'||state.surg==='lca')&&(t[0]!=='logros'||state.surg==='lca')&&(t[0]!=='informes'||state.surg==='lca')&&(t[0]!=='faq'||state.surg==='lca');}).map(function(t){
+  $('#tabs').innerHTML=visTabs().map(function(t){
     return '<button role="tab" aria-selected="'+(state.tab===t[0])+'" data-act="tab" data-t="'+t[0]+'">'+u(t[1])+(t[0]==='progreso'&&!doc()&&!progLocked()&&pendingCount()?'<span class="dot" role="img" aria-label="Evaluación pendiente"></span>':'')+'</button>';}).join('');
-  document.body.classList.toggle('landing',pfNeedsOnb());
-  if(pfNeedsOnb()){$('#tabs').innerHTML='';$('#view').innerHTML=landingHtml();}else $('#view').innerHTML=views[state.tab]();
+  document.body.classList.toggle('landing',pfNeedsOnb());document.body.classList.toggle('pat',!doc());
+  const appM=!doc()&&!pfNeedsOnb();$('#tabs').style.display=appM?'none':'';
+  if(pfNeedsOnb()){$('#tabs').innerHTML='';$('#view').innerHTML=landingHtml();}else $('#view').innerHTML=(appM?(state.tab==='inicio'?appTilesHtml():appBackHtml()):'')+views[state.tab]();
   pfHeader();
+  {const rk=state.surg+'|'+pfNeedsOnb();if(state._rf!==rk){state._rf=rk;$('#allrefs').innerHTML=pfNeedsOnb()?'':allRefsHtml();}}
   {const f=$('#fecha');if(f){const lk=!!(state.premInfo&&!state.docOK);f.disabled=lk;f.title=lk?'La fecha de tu cirugía está fijada por tu código Premium':'Fecha de la cirugía';}}
   document.body.classList.toggle('editing',!!state.edit);
   if(state.edit)markEditable();
