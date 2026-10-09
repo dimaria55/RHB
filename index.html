@@ -338,7 +338,9 @@ div.docacc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-item
 body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
-body.landing header{display:none}
+body.landing header,body.landing #foot{display:none}
+body.landing .wrap{display:flex;flex-direction:column}
+body.landing .topbar{order:99;margin:30px 0 0;padding-top:14px;border-top:1px solid var(--line)}
 body.landing .controls{display:none}
 .ld-hero{position:relative;overflow:hidden;border-radius:18px;margin-top:6px;color:#fff;background:linear-gradient(165deg,#0b3f57 0%,#0a5c7a 55%,#2a8aa6 100%);isolation:isolate}
 .ld-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
@@ -360,7 +362,17 @@ body.landing .controls{display:none}
 .ld-sec{margin-top:34px}
 .ld-sec h2{font:600 1.55rem/1.15 var(--font-display);letter-spacing:-.01em}
 .ld-p{margin:8px 0 0;color:var(--mute);max-width:40em}
-.ld-surg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:16px}
+.ld-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:16px;align-items:start}
+.ld-part{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ld-part.open{border-color:var(--accent)}
+.ld-pb{display:flex;align-items:center;gap:12px;width:100%;font:inherit;font-size:1.05rem;color:var(--ink);background:none;border:0;padding:14px;cursor:pointer;min-height:64px;text-align:left}
+.ld-pb .ld-ic{box-sizing:content-box;padding:9px;border-radius:50%;background:var(--accent-soft)}
+.ld-pb b{flex:1}
+.ld-chev{width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);margin-right:6px;transition:transform .15s}
+.ld-part.open .ld-chev{transform:rotate(-135deg)}
+.ld-opts{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
+.ld-opt{display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:var(--ink);background:var(--accent-soft);border:1px solid transparent;border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px}
+.ld-opt:hover{border-color:var(--accent)}.ld-opt small{color:var(--mute);font-size:.82rem}
 .ld-sg{display:flex;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;min-height:64px}
 .ld-sg:hover{border-color:var(--accent)}
 .ld-sg span{display:flex;flex-direction:column}.ld-sg small{color:var(--mute);font-size:.82rem;line-height:1.3}
@@ -3465,7 +3477,7 @@ function pHistLca(){
   else h+='<section class="panel"><h3>'+tr('ACL-RSI (mensual, preparación psicológica)')+'</h3><p class="src" style="margin-top:8px">'+tr('No aplicable aún: disponible a partir del Mes 4 (día 120 tras la cirugía).')+'</p></section>';
   return h+wipeBlock();
 }
-function progLocked(){if(state.surg!=='lca'||doc()||state.premium)return false;const si=stageInfo();return !!(si&&si.d>14);}
+function progLocked(){return !doc()&&!state.premium&&(state.surg==='lca'||state.surg==='ptc');}
 function progresoView(){
   if(state.surg!=='ptc'&&state.surg!=='lca'&&state.ptab==='retos')state.ptab='cuestionario';
   const wk=pWeek();
@@ -3476,7 +3488,7 @@ function progresoView(){
   h+='<div class="psub"><div class="seg" role="group" aria-label="Secciones de Mi Progreso">'+[['retos','Retos'],['cuestionario','Cuestionarios'],['historial','Mi historial']].map(function(p){return '<button data-act="ptab" data-p="'+p[0]+'" aria-pressed="'+(state.ptab===p[0])+'">'+tr(p[1])+'</button>';}).join('')+'</div></div>';
   if(state.pmsg)h+='<div class="note '+state.pmsgKind+'" role="status" id="pmsg">'+state.pmsg+'</div>';
   if(state.ptab!=='cuestionario'&&!doc()){const md=monthlyDue(),wd=state.surg==='ptc'&&dueInfo('pro').due;if(md.length||wd)h+='<div class="note warn" role="status"><b>'+tr(md.length?'Evaluación mensual disponible':'Cuestionario semanal disponible')+'</b>: '+(md.length?md.map(function(k){return MONTHLY[k].name;}).join(' · '):'')+' <button class="ghost" style="margin-left:6px" data-act="ptab" data-p="cuestionario">'+tr('Ir a cuestionarios')+'</button></div>';}
-  if(progLocked()&&state.ptab!=='retos'){state.qopen=null;return h+'<section class="panel"><p class="src">🔒 '+tr('Los cuestionarios mensuales, el registro semanal y tu historial forman parte del paquete completo de rehabilitación LCA.')+'</p></section>'+lcaBanner();}
+  if(progLocked()&&state.ptab!=='retos'){state.qopen=null;return h+'<section class="panel"><p class="src">🔒 '+tr('Los cuestionarios, el registro semanal y tu historial forman parte del acceso Premium. Tu equipo te enviará un enlace personal para activarlo.')+'</p></section>'+(state.surg==='lca'?lcaBanner():'');}
   h+=state.ptab==='cuestionario'?pCuest():state.ptab==='historial'?pHist():pRetos();
   return h;
 }
@@ -3697,15 +3709,11 @@ function lcaBanner(){
    +it('Módulo «Tu Yo de Hace 1 Mes»','Comparativas y gráficas de su evolución')
    +it('Calendario de Recuperación','Fechas clave y recordatorios que se exportan a Google Calendar, Apple Calendar u Outlook')
    +'</ul>'
-   +'<p class="pk-ask">📲 '+tr('Pide a tu equipo médico el código de acceso o activa el pase completo para continuar tu recuperación con garantía clínica.')+'</p>'
-   +'<p><button class="cta big" data-act="accopen">🔑 '+tr('INGRESAR CÓDIGO DE ACCESO')+'</button></p></section>';
+   +'<p class="pk-ask">📲 '+tr('Tu equipo médico te enviará un enlace personal para activar el pase completo. Al abrirlo en este móvil se activa solo.')+'</p></section>';
 }
 function accModal(){
-  const a=state.acc,msg=a.busy?'Comprobando…':(a.err?(PREM_MSG[a.err]||PREM_MSG.sig):'');
-  return '<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="accT"><div class="kick">🔑 '+tr('Acceso completo')+'</div><h2 id="accT">'+tr('Introduce tu código de acceso')+'</h2><p class="src" style="margin-top:8px">'+tr('Lo mejor es abrir el enlace que te ha enviado tu cirujano o su equipo: se activa solo. Si prefieres, pega aquí el código completo.')+'</p>'
-   +'<label class="fld" style="margin-top:14px"><span class="lab">'+tr('Código de acceso')+'</span><input id="accIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+String(a.v||'').replace(/[<>"&]/g,'')+'" aria-describedby="accE"></label>'
-   +'<p id="accE" role="alert" style="margin-top:8px;color:var(--crit);min-height:1.2em">'+tr(msg)+'</p>'
-   +'<div class="tri-btns"><button class="ghost" data-act="accclose">'+tr('Cancelar')+'</button><button class="cta" data-act="accok">'+tr('Desbloquear')+'</button></div></div></div>';
+  return '<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="accT"><div class="kick">⭐ '+tr('Contenido Premium')+'</div><h2 id="accT">'+tr('Este contenido es del acceso completo')+'</h2><p class="src" style="margin-top:8px">'+tr('Tu equipo médico te enviará un enlace personal. Al abrirlo en este móvil, el acceso completo se activa solo.')+'</p>'
+   +'<div class="tri-btns"><button class="cta" data-act="accclose">'+tr('Entendido')+'</button></div></div></div>';
 }
 function accTry(){
   const inp=document.getElementById('accIn'),v=String(inp&&inp.value||'').trim();
@@ -3764,7 +3772,7 @@ const WD=['dom','lun','mar','mié','jue','vie','sáb'];
 function calCard(){
   const all=calHitos();
   let h='<section class="panel cal"><div class="kick">'+tr('Calendario')+'</div><h2>'+tr('Tu Calendario de Recuperación')+'</h2>';
-  if(!doc()&&!state.premium)return h+'<p class="src" style="margin-top:8px">🔒 '+tr('El calendario de recuperación con recordatorios para tu móvil forma parte del paquete completo de rehabilitación LCA.')+'</p><p style="margin-top:12px"><button class="cta" data-act="accopen">🔑 '+tr('Ingresar código de acceso')+'</button></p></section>';
+  if(!doc()&&!state.premium)return h+'<p class="src" style="margin-top:8px">🔒 '+tr('El calendario de recuperación con recordatorios para tu móvil forma parte del acceso Premium. Tu equipo te enviará un enlace personal para activarlo.')+'</p></section>';
   if(!all.length){
     return h+'<p class="src" style="margin-top:8px">'+tr('Introduce la fecha de tu cirugía arriba y aquí verás tus próximas fechas clave, calculadas automáticamente.')+'</p></section>';
   }
@@ -4369,7 +4377,7 @@ function profileHtml(){
 }
 function landingFormHtml(){
   const pp=state.premPending,d=pp?{name:(state.reg||{}).name||'',surg:pp.srg,date:pp.date}:(state.reg||{});
-  let h=premBanner()+(pp?'<section class="panel" style="border:2px solid var(--accent)"><div class="kick">⭐ Premium</div><h2>'+tr('Código Premium detectado')+'</h2><p style="margin-top:8px"><b>'+pfEsc(pp.code)+'</b><br>'+tr(SURG_N[pp.srg])+' · '+tr('cirugía')+' '+fullDate(pp.date)+'</p>'+(pp.or?'<p class="src" style="margin-top:8px">✔ '+tr('Tu cirujano ya ha indicado lo que te hicieron en quirófano.')+'</p>':'')+'<p class="src" style="margin-top:8px">'+tr('Solo falta tu nombre de pila. La cirugía y la fecha vienen de tu código y no se pueden cambiar.')+'</p><p style="margin-top:6px"><button class="linkish" data-act="pfpremno">'+tr('Quitar este código')+'</button></p></section>':'<section class="panel" id="premBox"><div class="kick">⭐ Premium</div><h2>'+tr('¿Tienes un código Premium?')+'</h2><p class="src" style="margin-top:8px">'+tr('Pega aquí el enlace o el código que te dio la consulta. Se rellenarán tu cirugía y la fecha.')+'</p><label class="fld" style="margin-top:10px"><span class="lab">'+tr('Código o enlace Premium')+'</span><input type="text" id="regPrem" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+pfEsc(state.premTxt||'')+'"></label><p style="margin-top:10px"><button class="ghost" data-act="pfprem">'+(state.premBusy?tr('Comprobando…'):tr('Comprobar código'))+'</button></p></section>');
+  let h=premBanner()+(pp?'<section class="panel" style="border:2px solid var(--accent)"><div class="kick">⭐ Premium</div><h2>'+tr('Código Premium detectado')+'</h2><p style="margin-top:8px"><b>'+pfEsc(pp.code)+'</b><br>'+tr(SURG_N[pp.srg])+' · '+tr('cirugía')+' '+fullDate(pp.date)+'</p>'+(pp.or?'<p class="src" style="margin-top:8px">✔ '+tr('Tu cirujano ya ha indicado lo que te hicieron en quirófano.')+'</p>':'')+'<p class="src" style="margin-top:8px">'+tr('Solo falta tu nombre de pila. La cirugía y la fecha vienen de tu código y no se pueden cambiar.')+'</p></section>':'');
   h+='<section class="panel" id="regForm"><div class="kick">'+tr('Empezar')+'</div><h2>'+tr('Crea tu perfil')+'</h2>'+
    '<label class="fld" style="margin-top:14px"><span class="lab">'+tr('Tu nombre de pila')+'</span><input type="text" id="regName" maxlength="30" autocomplete="given-name" placeholder="'+pfEsc(tr('Por ejemplo: Ana'))+'" value="'+pfEsc(d.name||'')+'"></label>'+
    (pp?'<div class="note" style="margin-top:16px;background:var(--surface2)"><p><b>'+tr('Tu cirugía')+':</b> '+tr(SURG_N[pp.srg])+' 🔒</p><p style="margin-top:6px"><b>'+tr('Fecha de la cirugía')+':</b> '+fullDate(pp.date)+' 🔒</p><p class="src" style="margin-top:6px">'+tr('Vienen de tu código Premium y no se pueden cambiar.')+'</p></div><input type="radio" name="regSurg" value="'+pp.srg+'" checked hidden>':'')+
@@ -4400,7 +4408,7 @@ function ldIc(n){
 }
 function landingHtml(){
   const pp=state.premPending;
-  const SG=[['lca','knee','Rodilla','LCA · ligamento cruzado anterior'],['ptr','knee2','Rodilla','Prótesis total de rodilla'],['ptc','hip','Cadera','Prótesis total de cadera'],['manguito','shoulder','Hombro','Manguito rotador'],['radio','wrist','Muñeca','Fractura de radio distal']];
+  const PARTS=[['hombro','shoulder','Hombro',[['manguito','Manguito rotador','Reparación artroscópica']]],['muneca','wrist','Muñeca',[['radio','Fractura de radio distal','Yeso o cirugía']]],['rodilla','knee','Rodilla',[['lca','LCA','Reconstrucción del ligamento cruzado anterior'],['ptr','Prótesis total de rodilla','PTR']]],['cadera','hip','Cadera',[['ptc','Prótesis total de cadera','PTC']]]];
   const FT=[['plan','Un plan semana a semana','Qué hacer, qué evitar y qué esperar en cada etapa, desde antes de la cirugía.'],['reto','Retos para medir tu avance','Pruebas sencillas para comprobar cómo vas y saber cuándo pasar a la siguiente fase.'],['alert','Cuándo llamar a tu equipo','Señales de alarma explicadas con claridad, para que sepas qué es normal y qué no.'],['chat','Dudas rápidas','Busca ducha, coche, hielo, muletas, dolor… y encuentra la respuesta en segundos.'],['chart','Cuestionarios de seguimiento','Tu evolución queda registrada para comentarla en consulta.']];
   let h=premBanner();
   h+='<section class="ld-hero"><img class="ld-photo" src="img/portada.jpg" alt="" onerror="this.remove()">'+
@@ -4408,13 +4416,13 @@ function landingHtml(){
    '<div class="ld-hero-in"><p class="ld-brand">'+tr('Consulta Dr. De María Prieto · Ibiza')+'</p>'+
    '<h1>'+tr('Tu recuperación, guiada paso a paso')+'</h1>'+
    '<p class="ld-lead">'+tr('Antes y después de tu operación de rodilla, cadera, hombro o muñeca, este portal te explica qué hacer cada semana, cómo medir tu progreso y cuándo avisar a tu equipo.')+'</p>'+
-   '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="regForm">'+tr(pp?'Solo falta tu nombre':'Crear mi perfil')+'</button>'+(pp?'':'<button class="ld-btn ghost" data-act="pfgo" data-t="premBox">'+tr('Tengo un código Premium')+'</button>')+'</div>'+
+   '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="regForm">'+tr(pp?'Solo falta tu nombre':'Crear mi perfil')+'</button>'+'</div>'+
    '<ul class="ld-trust"><li>'+tr('Funciona en tu móvil')+'</li><li>'+tr('Solo tu nombre de pila')+'</li><li>'+tr('Tus datos se quedan en tu dispositivo')+'</li></ul></div></section>';
-  h+='<section class="ld-sec"><h2>'+tr('Elige tu cirugía')+'</h2><p class="ld-p">'+tr('El portal se adapta a lo que te van a hacer o a lo que te han hecho.')+'</p><div class="ld-surg">'+
-   SG.map(function(x){return '<button class="ld-sg" data-act="pfpick" data-s="'+x[0]+'">'+ldIc(x[1])+'<span><b>'+tr(x[2])+'</b><small>'+tr(x[3])+'</small></span></button>';}).join('')+'</div></section>';
+  h+='<section class="ld-sec"><h2>'+tr('¿Qué zona vas a operarte?')+'</h2><p class="ld-p">'+tr('Toca una zona y elige tu cirugía. El portal se adapta a lo que te van a hacer o a lo que te han hecho.')+'</p><div class="ld-parts">'+
+   PARTS.map(function(x){const op=state.ldOpen===x[0];return '<div class="ld-part'+(op?' open':'')+'"><button class="ld-pb" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'">'+ldIc(x[1])+'<b>'+tr(x[2])+'</b><span class="ld-chev" aria-hidden="true"></span></button>'+(op?'<div class="ld-opts">'+x[3].map(function(o){return '<button class="ld-opt" data-act="pfpick" data-s="'+o[0]+'"><b>'+tr(o[1])+'</b><small>'+tr(o[2])+'</small></button>';}).join('')+'</div>':'')+'</div>';}).join('')+'</div></section>';
   h+='<section class="ld-sec"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
    FT.map(function(x){return '<li>'+ldIc(x[0])+'<div><b>'+tr(x[1])+'</b><p>'+tr(x[2])+'</p></div></li>';}).join('')+'</ul></section>';
-  h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te dio un código, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
+  h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te envió un enlace personal, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
   h+='<section class="ld-sec ld-doc"><div class="ld-avatar"><img src="img/doctor.jpg" alt="" onerror="this.remove()"><span>JM</span></div><div><h2>'+tr('Quién está detrás')+'</h2><p class="ld-p">'+tr('El Dr. José Manuel De María Prieto, de Cirugía Ortopédica y Traumatología en Ibiza, ha preparado este portal con la información que se explica en consulta, para que la tengas siempre a mano.')+'</p></div></section>';
   h+=landingFormHtml();
   h+='<section class="ld-sec ld-foot"><p>'+ldIc('lock').replace('28','16').replace('28','16')+' '+tr('Tu perfil se guarda solo en este dispositivo. No escribas apellidos ni otros datos personales.')+'</p><p>'+tr('Información educativa general. No sustituye la valoración de tu cirujano: ante cualquier duda o síntoma de alarma, contacta con tu equipo.')+'</p></section>';
@@ -4442,6 +4450,7 @@ document.addEventListener('click',function(e){
   const a=b.dataset.act;
   e.stopPropagation();e.preventDefault();
   if(a==='pfgo'){const t=document.getElementById(b.dataset.t);if(t){try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(err){t.scrollIntoView();}const f=t.querySelector('input[type=text]');if(f&&b.dataset.t!=='premBox')setTimeout(function(){try{f.focus({preventScroll:true});}catch(err){}},500);}return;}
+  if(a==='pfpart'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm});state.ldOpen=state.ldOpen===b.dataset.p?'':b.dataset.p;render();return;}
   if(a==='pfpick'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm,surg:b.dataset.s});render();const t=document.getElementById('regForm');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});return;}
   if(a==='pfpremno'){state.premPending=null;state.premTxt='';render();return;}
   if(a==='pfprem'){
