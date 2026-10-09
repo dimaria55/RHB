@@ -338,6 +338,50 @@ div.docacc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-item
 body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
+body.landing header{display:none}
+body.landing .controls{display:none}
+.ld-hero{position:relative;overflow:hidden;border-radius:18px;margin-top:6px;color:#fff;background:linear-gradient(165deg,#0b3f57 0%,#0a5c7a 55%,#2a8aa6 100%);isolation:isolate}
+.ld-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.ld-photo~.ld-sea{opacity:.8}
+.ld-hero:has(.ld-photo)::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,38,52,.55),rgba(6,38,52,.78))}
+.ld-sun{position:absolute;top:24px;right:22px;width:52px;height:52px;border-radius:50%;background:#f6d9a3;opacity:.92;z-index:-1}
+.ld-hero:has(.ld-photo) .ld-sun{display:none}
+.ld-sea{position:absolute;left:0;right:0;bottom:0;width:100%;height:46%;z-index:-1}
+.ld-hero-in{padding:34px 22px 74px;max-width:640px}
+.ld-brand{margin:0 0 14px;font:500 .9rem var(--font-body);opacity:.88}
+.ld-hero h1{font:600 clamp(2rem,8.6vw,3.4rem)/1.04 var(--font-display);letter-spacing:-.02em;margin:0;color:#fff;text-wrap:balance}
+.ld-lead{margin:16px 0 0;font-size:1.08rem;line-height:1.55;max-width:34em;color:#e8f3f7}
+.ld-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.ld-btn{font:600 1rem var(--font-body);border:2px solid #fff;background:#fff;color:#0a4a63;border-radius:999px;padding:13px 24px;cursor:pointer;min-height:48px}
+.ld-btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
+.ld-btn:hover{filter:brightness(.96)}
+.ld-trust{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.88rem;color:#d4e8ef}
+.ld-trust li::before{content:"✓";margin-right:6px;color:#f6d9a3}
+.ld-sec{margin-top:34px}
+.ld-sec h2{font:600 1.55rem/1.15 var(--font-display);letter-spacing:-.01em}
+.ld-p{margin:8px 0 0;color:var(--mute);max-width:40em}
+.ld-surg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:16px}
+.ld-sg{display:flex;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;min-height:64px}
+.ld-sg:hover{border-color:var(--accent)}
+.ld-sg span{display:flex;flex-direction:column}.ld-sg small{color:var(--mute);font-size:.82rem;line-height:1.3}
+.ld-ic{flex:none;color:var(--accent)}
+.ld-sg .ld-ic{box-sizing:content-box;padding:9px;border-radius:50%;background:var(--accent-soft)}
+.ld-ft{list-style:none;margin:6px 0 0;padding:0}
+.ld-ft li{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
+.ld-ft li:first-child{border-top:0}
+.ld-ft p{margin:3px 0 0;color:var(--mute);max-width:38em}
+.ld-steps{list-style:none;counter-reset:s;margin:14px 0 0;padding:0;border-left:2px solid var(--accent-soft)}
+.ld-steps li{counter-increment:s;position:relative;padding:0 0 22px 26px}
+.ld-steps li::before{content:counter(s);position:absolute;left:-14px;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:600 .85rem/26px var(--font-body);text-align:center}
+.ld-steps p{margin:3px 0 0;color:var(--mute);max-width:38em}
+.ld-doc{display:flex;gap:16px;align-items:center;background:var(--surface2);border-radius:16px;padding:18px}
+.ld-avatar{position:relative;flex:none;width:84px;height:84px;border-radius:50%;overflow:hidden;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 1.5rem var(--font-display)}
+.ld-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ld-doc h2{font-size:1.25rem}
+.ld-foot{color:var(--mute);font-size:.85rem}.ld-foot p{margin:6px 0}
+.ld-foot .ld-ic{vertical-align:-3px}
+@media (max-width:420px){.ld-hero-in{padding:28px 18px 70px}.ld-doc{flex-direction:column;align-items:flex-start}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 body.editing [data-ok]{outline:1px dashed var(--accent);outline-offset:2px;border-radius:3px;cursor:text}
 body.editing [data-ok]:hover{background:var(--accent-soft)}
 body.editing [data-ok]:focus{outline:2px solid var(--accent);background:var(--accent-soft)}
@@ -4323,11 +4367,9 @@ function profileHtml(){
   h+='</div><p class="src" style="margin-top:10px">'+tr('Tu perfil se guarda solo en este dispositivo y no se envía a ningún servidor.')+'</p></section>';
   return h;
 }
-function landingHtml(){
+function landingFormHtml(){
   const pp=state.premPending,d=pp?{name:(state.reg||{}).name||'',surg:pp.srg,date:pp.date}:(state.reg||{});
-  let h=premBanner()+(pp?'<section class="panel" style="border:2px solid var(--accent)"><div class="kick">⭐ Premium</div><h2>'+tr('Código Premium detectado')+'</h2><p style="margin-top:8px"><b>'+pfEsc(pp.code)+'</b><br>'+tr(SURG_N[pp.srg])+' · '+tr('cirugía')+' '+fullDate(pp.date)+'</p>'+(pp.or?'<p class="src" style="margin-top:8px">✔ '+tr('Tu cirujano ya ha indicado lo que te hicieron en quirófano.')+'</p>':'')+'<p class="src" style="margin-top:8px">'+tr('Solo falta tu nombre de pila. La cirugía y la fecha vienen de tu código y no se pueden cambiar.')+'</p><p style="margin-top:6px"><button class="linkish" data-act="pfpremno">'+tr('Quitar este código')+'</button></p></section>':'<section class="panel" id="premBox"><div class="kick">⭐ Premium</div><h2>'+tr('¿Tienes un código Premium?')+'</h2><p class="src" style="margin-top:8px">'+tr('Pega aquí el enlace o el código que te dio la consulta. Se rellenarán tu cirugía y la fecha.')+'</p><label class="fld" style="margin-top:10px"><span class="lab">'+tr('Código o enlace Premium')+'</span><input type="text" id="regPrem" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+pfEsc(state.premTxt||'')+'"></label><p style="margin-top:10px"><button class="ghost" data-act="pfprem">'+(state.premBusy?tr('Comprobando…'):tr('Comprobar código'))+'</button></p></section>')+'<section class="panel hero-l"><div class="kick">'+tr('Bienvenido/a')+'</div><h2>'+tr('Tu rehabilitación, paso a paso')+'</h2>'+
-   '<p class="lead" style="margin-top:10px">'+tr('Portal de la consulta del Dr. De María Prieto para pacientes que se operan de rodilla, cadera, hombro o muñeca. Te acompaña antes y después de la cirugía con ejercicios, avisos y el seguimiento de tu recuperación.')+'</p>'+
-   '<ol class="steps-l"><li><b>'+tr('Crea tu perfil.')+'</b> '+tr('Solo tu nombre de pila y tu cirugía.')+'</li><li><b>'+tr('Prepárate antes de operarte.')+'</b> '+tr('La parte PRE-Cirugía está disponible aunque todavía no sepas la fecha.')+'</li><li><b>'+tr('El día de la cirugía,')+'</b> '+tr('indica lo que te hicieron en quirófano y el portal adapta tu plan.')+'</li></ol></section>';
+  let h=premBanner()+(pp?'<section class="panel" style="border:2px solid var(--accent)"><div class="kick">⭐ Premium</div><h2>'+tr('Código Premium detectado')+'</h2><p style="margin-top:8px"><b>'+pfEsc(pp.code)+'</b><br>'+tr(SURG_N[pp.srg])+' · '+tr('cirugía')+' '+fullDate(pp.date)+'</p>'+(pp.or?'<p class="src" style="margin-top:8px">✔ '+tr('Tu cirujano ya ha indicado lo que te hicieron en quirófano.')+'</p>':'')+'<p class="src" style="margin-top:8px">'+tr('Solo falta tu nombre de pila. La cirugía y la fecha vienen de tu código y no se pueden cambiar.')+'</p><p style="margin-top:6px"><button class="linkish" data-act="pfpremno">'+tr('Quitar este código')+'</button></p></section>':'<section class="panel" id="premBox"><div class="kick">⭐ Premium</div><h2>'+tr('¿Tienes un código Premium?')+'</h2><p class="src" style="margin-top:8px">'+tr('Pega aquí el enlace o el código que te dio la consulta. Se rellenarán tu cirugía y la fecha.')+'</p><label class="fld" style="margin-top:10px"><span class="lab">'+tr('Código o enlace Premium')+'</span><input type="text" id="regPrem" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+pfEsc(state.premTxt||'')+'"></label><p style="margin-top:10px"><button class="ghost" data-act="pfprem">'+(state.premBusy?tr('Comprobando…'):tr('Comprobar código'))+'</button></p></section>');
   h+='<section class="panel" id="regForm"><div class="kick">'+tr('Empezar')+'</div><h2>'+tr('Crea tu perfil')+'</h2>'+
    '<label class="fld" style="margin-top:14px"><span class="lab">'+tr('Tu nombre de pila')+'</span><input type="text" id="regName" maxlength="30" autocomplete="given-name" placeholder="'+pfEsc(tr('Por ejemplo: Ana'))+'" value="'+pfEsc(d.name||'')+'"></label>'+
    (pp?'<div class="note" style="margin-top:16px;background:var(--surface2)"><p><b>'+tr('Tu cirugía')+':</b> '+tr(SURG_N[pp.srg])+' 🔒</p><p style="margin-top:6px"><b>'+tr('Fecha de la cirugía')+':</b> '+fullDate(pp.date)+' 🔒</p><p class="src" style="margin-top:6px">'+tr('Vienen de tu código Premium y no se pueden cambiar.')+'</p></div><input type="radio" name="regSurg" value="'+pp.srg+'" checked hidden>':'')+
@@ -4338,6 +4380,44 @@ function landingHtml(){
    '<p class="note" style="margin-top:14px;background:var(--surface2)">🔒 '+tr('Tu perfil se guarda solo en este dispositivo y no se envía a ningún servidor. No escribas apellidos ni otros datos personales.')+'</p>'+
    (state.regErr?'<p class="note warn" role="alert" style="margin-top:10px">'+tr(state.regErr)+'</p>':'')+
    '<p style="margin-top:14px"><button class="cta big" data-act="pfcreate">'+tr('Crear mi perfil')+'</button></p></section>';
+  return h;
+}
+function ldIc(n){
+  const P={
+   knee:'<path d="M8 2.5 12 11l-3.5 10"/><circle cx="12" cy="11" r="2.4"/><path d="M12 11l4.5 4.5"/>',
+   knee2:'<path d="M7 3l5 8.5L8 21"/><circle cx="12" cy="11.5" r="2.4"/><path d="M14.3 12l4 3"/>',
+   hip:'<path d="M5 4c3 0 5 2 7 6"/><circle cx="12" cy="11" r="2.4"/><path d="M12 13.4 9 21"/><path d="M14.3 10.2 19 8"/>',
+   shoulder:'<path d="M3 8c3-3 8-3 11 0"/><circle cx="14" cy="9" r="2.4"/><path d="M15.5 11 19 20"/><path d="M16.4 8l4.6-1"/>',
+   wrist:'<path d="M3 15l8-2.5"/><circle cx="13.5" cy="12" r="2.2"/><path d="M15.6 11l5-4"/><path d="M15.2 13.3l4.8 3"/>',
+   plan:'<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8.5 15l2.2 2 4-4"/>',
+   reto:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8" fill="currentColor"/>',
+   alert:'<path d="M12 3.5 21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".7" fill="currentColor"/>',
+   chat:'<path d="M4 5.5h16v10H12l-4.5 3.5v-3.5H4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+   chart:'<path d="M4 20V4M4 20h16"/><path d="M7.5 15l3.5-4 3 2.5 4.5-6"/>',
+   lock:'<rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>'
+  };
+  return '<svg class="ld-ic" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[n]||'')+'</svg>';
+}
+function landingHtml(){
+  const pp=state.premPending;
+  const SG=[['lca','knee','Rodilla','LCA · ligamento cruzado anterior'],['ptr','knee2','Rodilla','Prótesis total de rodilla'],['ptc','hip','Cadera','Prótesis total de cadera'],['manguito','shoulder','Hombro','Manguito rotador'],['radio','wrist','Muñeca','Fractura de radio distal']];
+  const FT=[['plan','Un plan semana a semana','Qué hacer, qué evitar y qué esperar en cada etapa, desde antes de la cirugía.'],['reto','Retos para medir tu avance','Pruebas sencillas para comprobar cómo vas y saber cuándo pasar a la siguiente fase.'],['alert','Cuándo llamar a tu equipo','Señales de alarma explicadas con claridad, para que sepas qué es normal y qué no.'],['chat','Dudas rápidas','Busca ducha, coche, hielo, muletas, dolor… y encuentra la respuesta en segundos.'],['chart','Cuestionarios de seguimiento','Tu evolución queda registrada para comentarla en consulta.']];
+  let h=premBanner();
+  h+='<section class="ld-hero"><img class="ld-photo" src="img/portada.jpg" alt="" onerror="this.remove()">'+
+   '<span class="ld-sun" aria-hidden="true"></span><svg class="ld-sea" viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><path d="M0 92c50-24 100 20 200-4s150-14 200 8v64H0z" fill="#ffffff" opacity=".10"/><path d="M0 112c60-22 110 16 210-6s130-8 190 6v48H0z" fill="#ffffff" opacity=".14"/><path d="M0 134c70-16 120 10 220-4s120-6 180 4v26H0z" fill="#ffffff" opacity=".22"/></svg>'+
+   '<div class="ld-hero-in"><p class="ld-brand">'+tr('Consulta Dr. De María Prieto · Ibiza')+'</p>'+
+   '<h1>'+tr('Tu recuperación, guiada paso a paso')+'</h1>'+
+   '<p class="ld-lead">'+tr('Antes y después de tu operación de rodilla, cadera, hombro o muñeca, este portal te explica qué hacer cada semana, cómo medir tu progreso y cuándo avisar a tu equipo.')+'</p>'+
+   '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="regForm">'+tr(pp?'Solo falta tu nombre':'Crear mi perfil')+'</button>'+(pp?'':'<button class="ld-btn ghost" data-act="pfgo" data-t="premBox">'+tr('Tengo un código Premium')+'</button>')+'</div>'+
+   '<ul class="ld-trust"><li>'+tr('Funciona en tu móvil')+'</li><li>'+tr('Solo tu nombre de pila')+'</li><li>'+tr('Tus datos se quedan en tu dispositivo')+'</li></ul></div></section>';
+  h+='<section class="ld-sec"><h2>'+tr('Elige tu cirugía')+'</h2><p class="ld-p">'+tr('El portal se adapta a lo que te van a hacer o a lo que te han hecho.')+'</p><div class="ld-surg">'+
+   SG.map(function(x){return '<button class="ld-sg" data-act="pfpick" data-s="'+x[0]+'">'+ldIc(x[1])+'<span><b>'+tr(x[2])+'</b><small>'+tr(x[3])+'</small></span></button>';}).join('')+'</div></section>';
+  h+='<section class="ld-sec"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
+   FT.map(function(x){return '<li>'+ldIc(x[0])+'<div><b>'+tr(x[1])+'</b><p>'+tr(x[2])+'</p></div></li>';}).join('')+'</ul></section>';
+  h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te dio un código, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
+  h+='<section class="ld-sec ld-doc"><div class="ld-avatar"><img src="img/doctor.jpg" alt="" onerror="this.remove()"><span>JM</span></div><div><h2>'+tr('Quién está detrás')+'</h2><p class="ld-p">'+tr('El Dr. José Manuel De María Prieto, de Cirugía Ortopédica y Traumatología en Ibiza, ha preparado este portal con la información que se explica en consulta, para que la tengas siempre a mano.')+'</p></div></section>';
+  h+=landingFormHtml();
+  h+='<section class="ld-sec ld-foot"><p>'+ldIc('lock').replace('28','16').replace('28','16')+' '+tr('Tu perfil se guarda solo en este dispositivo. No escribas apellidos ni otros datos personales.')+'</p><p>'+tr('Información educativa general. No sustituye la valoración de tu cirujano: ante cualquier duda o síntoma de alarma, contacta con tu equipo.')+'</p></section>';
   return h;
 }
 function docAccessHtml(){
@@ -4361,6 +4441,8 @@ document.addEventListener('click',function(e){
   const b=e.target.closest&&e.target.closest('[data-act^="pf"]');if(!b)return;
   const a=b.dataset.act;
   e.stopPropagation();e.preventDefault();
+  if(a==='pfgo'){const t=document.getElementById(b.dataset.t);if(t){try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(err){t.scrollIntoView();}const f=t.querySelector('input[type=text]');if(f&&b.dataset.t!=='premBox')setTimeout(function(){try{f.focus({preventScroll:true});}catch(err){}},500);}return;}
+  if(a==='pfpick'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm,surg:b.dataset.s});render();const t=document.getElementById('regForm');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});return;}
   if(a==='pfpremno'){state.premPending=null;state.premTxt='';render();return;}
   if(a==='pfprem'){
     const v=((document.getElementById('regPrem')||{}).value||'').trim();
@@ -4564,6 +4646,7 @@ function render(){
   applyA11y();
   $('#tabs').innerHTML=TABS.filter(function(t){return (t[0]!=='fuentes'||doc())&&(t[0]!=='progreso'||state.surg==='ptc'||state.surg==='lca')&&(t[0]!=='logros'||state.surg==='lca')&&(t[0]!=='informes'||state.surg==='lca')&&(t[0]!=='faq'||state.surg==='lca');}).map(function(t){
     return '<button role="tab" aria-selected="'+(state.tab===t[0])+'" data-act="tab" data-t="'+t[0]+'">'+u(t[1])+(t[0]==='progreso'&&!doc()&&!progLocked()&&pendingCount()?'<span class="dot" role="img" aria-label="Evaluación pendiente"></span>':'')+'</button>';}).join('');
+  document.body.classList.toggle('landing',pfNeedsOnb());
   if(pfNeedsOnb()){$('#tabs').innerHTML='';$('#view').innerHTML=landingHtml();}else $('#view').innerHTML=views[state.tab]();
   pfHeader();
   {const f=$('#fecha');if(f){const lk=!!(state.premInfo&&!state.docOK);f.disabled=lk;f.title=lk?'La fecha de tu cirugía está fijada por tu código Premium':'Fecha de la cirugía';}}
