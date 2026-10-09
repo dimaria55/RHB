@@ -301,7 +301,8 @@ details.vals summary{cursor:pointer;color:var(--accent)}
 @media (prefers-reduced-motion:reduce){.faq-a,.faq-q .chev{transition:none!important}}
 /* ===== Perfil / registro / quirófano ===== */
 .hello{margin-top:6px;font:600 1.05rem var(--font-body);color:var(--accent)}
-.hello[hidden],.surgfixed[hidden],label.surg[hidden],.tb[hidden]{display:none}
+.hsurg{margin:4px 0 0;font:600 1.5rem/1.2 var(--font-display);text-wrap:balance}
+.hsurg[hidden],.sub[hidden],.hello[hidden],.surgfixed[hidden],label.surg[hidden],.tb[hidden]{display:none}
 .surgfixed{margin:0;font-weight:600;font-size:.98rem;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
 .steps-l{margin:14px 0 0;padding-left:20px}
 .steps-l li{margin-top:8px;line-height:1.5}
@@ -340,6 +341,7 @@ body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
 body.landing header,body.landing #foot{display:none}
+body.pat h1{font-size:1rem;font-weight:500;color:var(--mute)}
 .apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 18px}
 @media(min-width:620px){.apps{grid-template-columns:repeat(4,1fr)}}
 .app{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1;font:inherit;border:0;border-radius:22px;cursor:pointer;color:hsl(var(--h) 62% 28%);background:hsl(var(--h) 60% 92%);padding:8px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 6px 14px -8px hsl(var(--h) 60% 30% / .5)}
@@ -352,7 +354,6 @@ body.landing header,body.landing #foot{display:none}
 .app.off{filter:grayscale(.9);opacity:.75}
 .bdcat{margin:22px 0 10px}
 .apps.bd{margin-top:0}
-.premnote{background:var(--surface2);color:var(--ink);margin:6px 0 0}
 .appbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;background:var(--bg);padding:8px 0 10px;margin-bottom:6px}
 .appback{font:600 .95rem var(--font-body);color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;padding:9px 16px;cursor:pointer;min-height:40px}
 .appbar b{font:600 1.05rem var(--font-display)}
@@ -434,11 +435,12 @@ body.editing [data-ok]:focus{outline:2px solid var(--accent);background:var(--ac
         <button id="sz-1" data-act="size" data-s="1" aria-pressed="false">A+</button>
         <button id="sz-2" data-act="size" data-s="2" aria-pressed="false">A++</button>
       </div></div>
-    <div class="tb"><span class="lab" id="l-con">Contraste</span>
-      <div class="seg"><button id="contrast" data-act="contrast" aria-pressed="false">Alto</button></div></div>
+    <div class="tb"><span class="lab" id="l-con">Fondo</span>
+      <div class="seg"><button id="th-l" data-act="theme" data-v="light" aria-pressed="true">Claro</button><button id="th-d" data-act="theme" data-v="dark" aria-pressed="false">Oscuro</button></div></div>
   </div>
   <header>
-    <h1>Consulta Dr. De María Prieto</h1>
+    <h1 id="hTitle">Consulta Dr. De María Prieto</h1>
+    <p class="hsurg" id="hSurg" hidden></p>
     <p class="hello" id="hello" hidden></p>
     <p class="sub" id="sub">Protocolos de rehabilitación · Cirugía Ortopédica y Traumatología, Ibiza</p>
     <label class="surg"><span class="surghead"><span class="lab" id="surgLab">Cirugía</span><input type="date" id="fecha" class="surgdate" aria-label="Fecha de la cirugía" title="Fecha de la cirugía"></span>
@@ -553,7 +555,7 @@ body.editing [data-ok]:focus{outline:2px solid var(--accent);background:var(--ac
 
 <script>
 const V='v',D='d',P='p';
-const UI={"view": ["Vista"], "patient": ["Paciente"], "doctor": ["Médico"], "size": ["Texto"], "con": ["Contraste"], "high": ["Alto"], "sub": ["Protocolos de rehabilitación · Cirugía Ortopédica y Traumatología, Ibiza"], "surg": ["Cirugía"], "optLca": ["LCA · Reconstrucción del ligamento cruzado anterior"], "demoPac": ["Prototipo versión 3. Los textos médicos deben ser aprobados por el cirujano antes de uso real."], "demoDoc": ["Vista médico: cada dato lleva su fuente y su estado (verificado, decisión del cirujano o por validar). Se muestra todo el contenido, sin bloqueo premium."], "tInicio": ["Inicio"], "tEtapas": ["Etapas y objetivos"], "tEjercicios": ["Ejercicios"], "tRiesgos": ["Riesgos"], "tFuentes": ["Fuentes y pendientes"], "foot": ["Información educativa general. No sustituye la valoración de su cirujano. Las semanas son orientativas: lo que decide el paso a la siguiente etapa son los criterios."], "kick": ["Reconstrucción del LCA"], "h2": ["Su recuperación, etapa a etapa"], "lead": ["Una guía por etapas con ejercicios en vídeo, avisos y los criterios que deciden cuándo pasar a la siguiente. Las semanas son orientativas."], "free": ["Gratis"], "freeTxt": ["PRE-Cirugía, día de cirugía, riesgos y semanas 1-2"], "premium": ["Premium"], "premTxt": ["Resto de contenido, ejercicios en vídeo y seguimiento"], "c0": ["PRE-Cirugía"], "c0t": ["Cómo llegar a la cirugía con la rodilla preparada."], "c1": ["DÍA DE CIRUGÍA"], "c1t": ["Instrucciones previas, documentación y qué esperar en el hospital."], "c2": ["Primeras semanas"], "c2t": ["Disminuir el dolor, la hinchazón y conseguir/mantener la extensión completa."], "c3": ["Riesgos"], "c3t": ["Qué puede pasar y qué vigilar."], "tProgreso": ["Mi Progreso"], "tLogros": ["Logros"], "tInformes": ["Informes"], "tFaq": ["Dudas rápidas / FAQ"], "c4": ["Mi Progreso"], "c4t": ["Retos semanales, cuestionario y gráficas para ver cómo mejora."], "c4tl": ["Retos, cuestionarios mensuales y gráficas para ver cómo mejora su rodilla."], "see": ["Ver"], "myStage": ["Mi etapa"], "surgDate": ["Fecha de la cirugía"], "pre": ["Faltan {0} días para la cirugía."], "pre1": ["Falta 1 día para la cirugía."], "day0": ["Hoy es el día de su cirugía."], "wk": ["Hoy: semana {0} tras la cirugía (etapa: {1})."], "seeMine": ["Ver mi etapa"], "dateHint": ["Introduzca la fecha de su cirugía y la página le mostrará la etapa que le toca."], "codeLab": ["Código de su médico"], "codePh": ["p. ej. hs-m0-l0"], "apply": ["Aplicar"], "codeOk": ["Plan aplicado."], "codeBad": ["Código no válido. Revise que lo ha escrito igual que su médico."], "general": ["Está viendo el plan general (injerto de isquiotibiales, sin cirugías asociadas). Si su médico le ha dado un código, introdúzcalo para ver su plan."], "today": ["hoy"], "partial": ["Parcial"], "stages": ["Etapas"], "goals": ["Objetivos"], "todo": ["Qué hacer"], "warnings": ["Avisos"], "criteria": ["Para pasar a la siguiente etapa"], "seeEx": ["Ver ejercicios con vídeo"], "refs": ["Referencias de esta etapa"], "prep": ["Contenido en preparación."], "pwTitle": ["Contenido premium"], "pwText": ["El programa completo incluye todas las etapas, los ejercicios con vídeo y el seguimiento de criterios."], "pwNote": ["No es necesario desbloquear el contenido premium para tener una buena recuperación: se trata simplemente de una ayuda adicional que le acompaña a lo largo del proceso."], "unlock": ["Desbloquear (demo)"], "locked": ["Bloqueado"], "moreEx": ["Esta etapa incluye {0} ejercicios más con vídeo en el programa premium."], "exIntro": ["Ejercicios de la etapa seleccionada: {0}. Los vídeos son marcadores y se sustituirán por grabaciones del equipo."], "exPrem": ["Disponible en el programa premium ({0} ejercicios)."], "exNone": ["Esta etapa no tiene ejercicios con la pauta elegida."], "vidPend": ["Vídeo pendiente de grabar"], "vidAria": ["Vídeo pendiente"], "copy": ["Copiar"], "copied": ["Copiado"]};
+const UI={"view": ["Vista"], "patient": ["Paciente"], "doctor": ["Médico"], "size": ["Texto"], "con": ["Fondo"], "high": ["Alto"], "sub": ["Protocolos de rehabilitación · Cirugía Ortopédica y Traumatología, Ibiza"], "surg": ["Cirugía"], "optLca": ["LCA · Reconstrucción del ligamento cruzado anterior"], "demoPac": ["Prototipo versión 3. Los textos médicos deben ser aprobados por el cirujano antes de uso real."], "demoDoc": ["Vista médico: cada dato lleva su fuente y su estado (verificado, decisión del cirujano o por validar). Se muestra todo el contenido, sin bloqueo premium."], "tInicio": ["Inicio"], "tEtapas": ["Etapas y objetivos"], "tEjercicios": ["Ejercicios"], "tRiesgos": ["Riesgos"], "tFuentes": ["Fuentes y pendientes"], "foot": ["Información educativa general. No sustituye la valoración de su cirujano. Las semanas son orientativas: lo que decide el paso a la siguiente etapa son los criterios."], "kick": ["Reconstrucción del LCA"], "h2": ["Su recuperación, etapa a etapa"], "lead": ["Una guía por etapas con ejercicios en vídeo, avisos y los criterios que deciden cuándo pasar a la siguiente. Las semanas son orientativas."], "free": ["Gratis"], "freeTxt": ["PRE-Cirugía, día de cirugía, riesgos y semanas 1-2"], "premium": ["Premium"], "premTxt": ["Resto de contenido, ejercicios en vídeo y seguimiento"], "c0": ["PRE-Cirugía"], "c0t": ["Cómo llegar a la cirugía con la rodilla preparada."], "c1": ["DÍA DE CIRUGÍA"], "c1t": ["Instrucciones previas, documentación y qué esperar en el hospital."], "c2": ["Primeras semanas"], "c2t": ["Disminuir el dolor, la hinchazón y conseguir/mantener la extensión completa."], "c3": ["Riesgos"], "c3t": ["Qué puede pasar y qué vigilar."], "tProgreso": ["Mi Progreso"], "tLogros": ["Logros"], "tInformes": ["Informes"], "tFaq": ["Dudas rápidas / FAQ"], "c4": ["Mi Progreso"], "c4t": ["Retos semanales, cuestionario y gráficas para ver cómo mejora."], "c4tl": ["Retos, cuestionarios mensuales y gráficas para ver cómo mejora su rodilla."], "see": ["Ver"], "myStage": ["Mi etapa"], "surgDate": ["Fecha de la cirugía"], "pre": ["Faltan {0} días para la cirugía."], "pre1": ["Falta 1 día para la cirugía."], "day0": ["Hoy es el día de su cirugía."], "wk": ["Hoy: semana {0} tras la cirugía (etapa: {1})."], "seeMine": ["Ver mi etapa"], "dateHint": ["Introduzca la fecha de su cirugía y la página le mostrará la etapa que le toca."], "codeLab": ["Código de su médico"], "codePh": ["p. ej. hs-m0-l0"], "apply": ["Aplicar"], "codeOk": ["Plan aplicado."], "codeBad": ["Código no válido. Revise que lo ha escrito igual que su médico."], "general": ["Está viendo el plan general (injerto de isquiotibiales, sin cirugías asociadas). Si su médico le ha dado un código, introdúzcalo para ver su plan."], "today": ["hoy"], "partial": ["Parcial"], "stages": ["Etapas"], "goals": ["Objetivos"], "todo": ["Qué hacer"], "warnings": ["Avisos"], "criteria": ["Para pasar a la siguiente etapa"], "seeEx": ["Ver ejercicios con vídeo"], "refs": ["Referencias de esta etapa"], "prep": ["Contenido en preparación."], "pwTitle": ["Contenido premium"], "pwText": ["El programa completo incluye todas las etapas, los ejercicios con vídeo y el seguimiento de criterios."], "pwNote": ["No es necesario desbloquear el contenido premium para tener una buena recuperación: se trata simplemente de una ayuda adicional que le acompaña a lo largo del proceso."], "unlock": ["Desbloquear (demo)"], "locked": ["Bloqueado"], "moreEx": ["Esta etapa incluye {0} ejercicios más con vídeo en el programa premium."], "exIntro": ["Ejercicios de la etapa seleccionada: {0}. Los vídeos son marcadores y se sustituirán por grabaciones del equipo."], "exPrem": ["Disponible en el programa premium ({0} ejercicios)."], "exNone": ["Esta etapa no tiene ejercicios con la pauta elegida."], "vidPend": ["Vídeo pendiente de grabar"], "vidAria": ["Vídeo pendiente"], "copy": ["Copiar"], "copied": ["Copiado"]};
 const ALR_EXT={t:'Si no consigue estirar del todo la rodilla, o pierde la extensión después, avise a su equipo.',st:V,src:'Adams 2012'};
 const ALR_EXT4={t:'Si a las 4 semanas no consigue estirar del todo la rodilla, avise: a esa altura la falta de extensión se asocia con pérdida de extensión a las 12 semanas.',st:V,src:'Brinlee 2022 (cita a Noll 2015)'};
 const ALR_EFF={t:'Si la rodilla se hincha o duele más al progresar los ejercicios, no pase de nivel y avise.',st:V,src:'Brinlee 2022 (reglas del derrame)',d:'No progresar con derrame mayor de 1+ en la prueba del barrido. Si se mantiene en 2+ o más durante tiempo, contactar con el médico. Un cambio brusco de 2 grados, o derrame que aparece donde no había, obliga a bajar la actividad.'};
@@ -2882,7 +2884,7 @@ const state={view:'paciente',size:0,contrast:false,date:'',coded:false,codeMsg:'
 const $=s=>document.querySelector(s);
 const doc=()=>state.view==='medico';
 const assocOn=()=>state.meni||state.lem;
-const locked=i=>!doc()&&!stages[i].free&&!state.premium;
+const locked=i=>!doc()&&!state.premium&&(!stages[i].free||!!stages[i].partial);
 const partial=i=>!doc()&&!state.premium&&!!stages[i].partial;
 function freeEx(s){return stages[2].ex.map(pick).filter(Boolean);}
 function moreN(s){const n=freeEx(s).map(function(x){return x.n;});return s.ex.map(pick).filter(Boolean).filter(function(x){return n.indexOf(x.n)<0;}).length;}
@@ -2954,11 +2956,11 @@ function ovGet(k){const n=norm(k);return Object.prototype.hasOwnProperty.call(OV
 function tr(x){if(typeof x!=='string')return x;const o=ovGet(x);const r=o!=null?o:x;if(state.edit)REC.set(norm(r),norm(x));return r;}
 function u(k){const o=SURG[state.surg].ui;const pr=(o&&o[k])||UI[k];let x=pr[0];const ov=ovGet(pr[0]);if(ov!=null)x=ov;if(state.edit&&arguments.length===1)REC.set(norm(x),norm(pr[0]));for(let i=1;i<arguments.length;i++)x=x.replace('{'+(i-1)+'}',arguments[i]);return x;}
 const KEY='pc-dr-dmp-v1';
-function save(){try{localStorage.setItem(KEY,JSON.stringify({size:state.size,contrast:state.contrast,date:state.date,coded:state.coded,graft:state.graft,meni:state.meni,lem:state.lem,crit:state.crit,surg:state.surg,edad:state.edad,carga:state.carga,fij:state.fij,prec:state.prec,rama:state.rama,arcd:state.arcd,mt:state.mt,ms:state.ms,mb:state.mb,ma:state.ma}));}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({size:state.size,theme:state.theme||'',date:state.date,coded:state.coded,graft:state.graft,meni:state.meni,lem:state.lem,crit:state.crit,surg:state.surg,edad:state.edad,carga:state.carga,fij:state.fij,prec:state.prec,rama:state.rama,arcd:state.arcd,mt:state.mt,ms:state.ms,mb:state.mb,ma:state.ma}));}catch(e){}}
 function load(){try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(!o)return;
   
   if(o.size===0||o.size===1||o.size===2)state.size=o.size;
-  state.contrast=!!o.contrast;
+  if(o.theme==='light'||o.theme==='dark')state.theme=o.theme;
   if(typeof o.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(o.date))state.date=o.date;
   state.coded=!!o.coded;
   if(o.graft==='hs'||o.graft==='allo')state.graft=o.graft;
@@ -2975,11 +2977,12 @@ function load(){try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(!o)
   if(o.carga==='total'||o.carga==='parcial')state.carga=o.carga;
   if(o.fij==='n'||o.fij==='c')state.fij=o.fij;
   state.prec=!!o.prec;}catch(e){}}
+function themeNow(){if(state.theme==='light'||state.theme==='dark')return state.theme;try{return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){return 'light';}}
 function applyA11y(){
   const w=document.querySelector('.wrap');
   if(w&&w.style)w.style.zoom=[1,1.15,1.3][state.size]||1;
   const r=document.documentElement;
-  if(r&&r.setAttribute){if(state.contrast)r.setAttribute('data-contrast','high');else r.removeAttribute('data-contrast');}
+  if(r&&r.setAttribute){r.removeAttribute('data-contrast');r.setAttribute('data-theme',themeNow());}
 }
 function planCode(){if(state.surg==='ptr')return 'ptr-e'+(state.edad==='m'?1:0)+(state.date?'-'+state.date.replace(/-/g,''):'');if(state.surg==='manguito')return 'man-'+state.mt+'-s'+state.ms+'-b'+state.mb+'-a'+(state.ma?1:0)+(state.date?'-'+state.date.replace(/-/g,''):'');if(state.surg==='radio')return 'rad-'+state.rama+'-a'+(state.arcd&&state.rama!=='o'?1:0)+(state.date?'-'+state.date.replace(/-/g,''):'');if(state.surg==='ptc')return 'ptc-c'+(state.carga==='parcial'?1:0)+'-f'+(state.fij==='c'?1:0)+'-p'+(state.prec?1:0)+(state.date?'-'+state.date.replace(/-/g,''):'');return state.graft+'-m'+(state.meni?1:0)+'-l'+(state.lem?1:0)+(state.date?'-'+state.date.replace(/-/g,''):'');}
 function applyCode(c){
@@ -3049,31 +3052,30 @@ const views={
    h+='<section class="panel"><h3>Estado del contenido</h3><div class="tally" style="margin-top:10px"><div><b>'+c.v+'</b><span>Verificados con fuente</span></div><div><b>'+c.d+'</b><span>Decisiones del cirujano</span></div><div><b>'+c.p+'</b><span>Por validar</span></div></div>'+
    '<p class="sub" style="margin-top:12px">Cuenta los apartados visibles con las opciones elegidas arriba.</p></section>';}
   const card=function(a,b,act){return '<div class="panel"><h3>'+u(a)+'</h3><p style="margin:8px 0 12px">'+u(b)+'</p><button class="cta" '+act+'>'+u('see')+'</button></div>';};
-  h+='<div class="grid">'+card('c0','c0t','data-act="goto" data-i="0"')+card('c1','c1t','data-act="goto" data-i="1"')+card('c2','c2t','data-act="goto" data-i="2"')+card('c3','c3t','data-act="tab" data-t="riesgos"')+(state.surg==='ptc'?card('c4','c4t','data-act="tab" data-t="progreso"'):state.surg==='lca'?card('c4','c4tl','data-act="tab" data-t="progreso"'):'')+'</div>';
+  if(doc())h+='<div class="grid">'+card('c0','c0t','data-act="goto" data-i="0"')+card('c1','c1t','data-act="goto" data-i="1"')+card('c2','c2t','data-act="goto" data-i="2"')+card('c3','c3t','data-act="tab" data-t="riesgos"')+(state.surg==='ptc'?card('c4','c4t','data-act="tab" data-t="progreso"'):state.surg==='lca'?card('c4','c4tl','data-act="tab" data-t="progreso"'):'')+'</div>';
   h+=profileHtml();
   return h;
  },
  etapas:function(){
   if(!doc()&&!state.stOpen)return stageTilesHtml();
   const s=stages[state.stage]; let h=doc()?rail()+planeFor():'';
-  const fr=!doc()&&!state.premium;
   const urgent='<div class="sect"><div class="alert"><h3>'+u('warnings')+'</h3>'+list([SURG[state.surg].warn])+'</div></div>';
   if(locked(state.stage)) return h+'<div class="panel quiet"><div class="kick">'+tr(s.range)+'</div><h2>'+tr(s.title)+'</h2></div>'+urgent+paywall();
   h+='<section class="panel"><div class="kick">'+tr(s.range)+'</div>'+(s.title?'<h2>'+tr(s.title)+'</h2>':'');
   const goalsVis=(s.goals||[]).map(pick).filter(Boolean).length, exVis=s.ex.map(pick).filter(Boolean).length;
   if(s.sections) s.sections.forEach(function(sc){if(!sc.items.map(pick).filter(Boolean).length)return;h+='<div class="sect"><h2>'+tr(sc.h)+'</h2>'+(sc.num?list(sc.items).replace('<ul class="items">','<ol class="items num">').replace('</ul>','</ol>'):list(sc.items))+'</div>';});
-  else if(goalsVis||doc()) h+=fr?'<div class="sect"><h3>'+u('goals')+'</h3>'+premNote('Los objetivos de cada etapa')+'</div>':'<div class="sect"><h3>'+(doc()?'Objetivos':u('goals'))+'</h3>'+list(s.goals)+'</div>';
+  else if(goalsVis||doc()) h+='<div class="sect"><h3>'+(doc()?'Objetivos':u('goals'))+'</h3>'+list(s.goals)+'</div>';
   if(!doc()&&!s.sections&&!goalsVis&&!exVis) h+='<p class="sub" style="margin-top:12px">'+u('prep')+'</p>';
   const btn='<p><button class="ghost cta" style="background:none;color:var(--accent);border:1px solid var(--line)" data-act="tab" data-t="ejercicios">'+u('seeEx')+'</button></p>';
   const H=function(k){return doc()?({todo:'Qué hacer',warnings:'Avisos',criteria:'Para pasar a la siguiente etapa'})[k]:u(k);};
   if(partial(state.stage)){
     const fe=freeEx(s), more=moreN(s);
     h+='<div class="sect">'+paywall()+'</div>';
-    h+=fr?'<div class="sect"><h3>'+H('todo')+'</h3>'+premNote('Qué hacer en esta etapa')+'</div>':'<div class="sect"><h3>'+H('todo')+'</h3>'+(fe.length?exRows(fe):'')+'<p class="src">'+u('moreEx',more)+'</p>'+rep(more,lockCard)+btn+'</div>';
+    h+='<div class="sect"><h3>'+H('todo')+'</h3>'+(fe.length?exRows(fe):'')+'<p class="src">'+u('moreEx',more)+'</p>'+rep(more,lockCard)+btn+'</div>';
     h+='<div class="sect"><div class="alert"><h3>'+H('warnings')+'</h3>'+list([SURG[state.surg].warn])+'</div>'+lockCard()+'</div><div class="sect"><h3>'+H('criteria')+'</h3>'+lockCard()+'</div></section>';
     return h;
   }
-  if(exVis) h+=fr?'<div class="sect"><h3>'+H('todo')+'</h3>'+premNote('Qué hacer en esta etapa')+'</div>':'<div class="sect"><h3>'+H('todo')+'</h3>'+exRows(s.ex)+btn+'</div>';
+  if(exVis) h+='<div class="sect"><h3>'+H('todo')+'</h3>'+exRows(s.ex)+btn+'</div>';
   if(s.alarms.length) h+='<div class="sect"><div class="alert"><h3>'+H('warnings')+'</h3>'+list(s.alarms)+'</div></div>';
   if(s.criteria.length) h+='<div class="sect"><h3>'+H('criteria')+'</h3>'+critRows(s)+'</div>';
   h+=(doc()?'':refsFor(s))+'</section>';
@@ -4470,7 +4472,11 @@ function pfHeader(){
   const sel=document.getElementById('cirugia'),fx=document.getElementById('surgFixed'),lab=document.querySelector('label.surg');
   if(lab)lab.hidden=onb;
   if(sel)sel.hidden=pm;
-  if(fx){fx.hidden=!pm||!state.prof;fx.textContent=state.prof?tr(SURG_N[state.prof.surg]):'';}
+  if(fx){fx.hidden=true;fx.textContent='';}
+  {const h1=document.getElementById('hTitle'),hs=document.getElementById('hSurg'),sb=document.getElementById('sub'),pt=pm&&!!state.prof;
+   if(h1)h1.textContent=pt?'Protocolo de rehabilitación de:':'Consulta Dr. De María Prieto';
+   if(hs){hs.hidden=!pt;hs.textContent=pt?tr(SURG_N[state.prof.surg]).replace(' · ',' - '):'';}
+   if(sb)sb.hidden=pt;}
   const he=document.getElementById('hello');if(he){he.hidden=!(pm&&state.prof);he.textContent=state.prof?'Hola, '+state.prof.name+' 👋':'';}
   const da=document.getElementById('docAccess');if(da)da.innerHTML=docAccessHtml();
 }
@@ -4650,7 +4656,6 @@ function premBanner(){
 }
 
 loadProg();loadAch();premLoad();
-function premNote(t){return '<p class="note premnote">🔒 '+tr(t)+' '+tr('forman parte del acceso Premium. Tu equipo médico te enviará un enlace personal para activarlo.')+'</p>';}
 function stageTilesHtml(){
   const si=stageInfo();
   let h='<section class="panel"><h2>'+u('tEtapas')+'</h2><p class="lead" style="margin-top:8px">'+tr('Toca una etapa para ver de qué trata. Tu etapa de hoy aparece marcada.')+'</p></section><section class="apps st" aria-label="'+tr('Etapas')+'">';
@@ -4701,14 +4706,14 @@ function render(){
   if(state.tab==='faq'&&state.surg!=='lca') state.tab='inicio';
   REC.clear();
   const set=function(id,t){const e=$(id);if(e)e.innerHTML=t;};
-  set('#l-view',u('view'));set('#v-pac',u('patient'));set('#v-med',u('doctor'));set('#l-size',u('size'));set('#l-con',u('con'));set('#contrast',u('high'));
+  set('#l-view',u('view'));set('#v-pac',u('patient'));set('#v-med',u('doctor'));set('#l-size',u('size'));set('#l-con','Fondo');
   (function(){const e=$('#fecha');if(e&&e.value!==(state.date||''))e.value=state.date||'';})();
   set('#sub',u('sub'));set('#surgLab',u('surg'));set('#optLca',u('optLca'));set('#foot',u('foot'));
   set('#demo',doc()?u('demoDoc'):u('demoPac'));
   set('#pcode',planCode());set('#copycode',state.copied?u('copied'):u('copy'));
   $('#v-pac').setAttribute('aria-pressed',!doc());$('#v-med').setAttribute('aria-pressed',doc());
   [0,1,2].forEach(function(n){$('#sz-'+n).setAttribute('aria-pressed',state.size===n);});
-  $('#contrast').setAttribute('aria-pressed',state.contrast);
+  {const dk=themeNow()==='dark';$('#th-l').setAttribute('aria-pressed',!dk);$('#th-d').setAttribute('aria-pressed',dk);}
   $('#g-hs').setAttribute('aria-pressed',state.graft==='hs');$('#g-allo').setAttribute('aria-pressed',state.graft==='allo');
   $('#controls').hidden=!doc();
   $('#ctlLca').hidden=state.surg!=='lca';$('#ctlPtc').hidden=state.surg!=='ptc';$('#ctlRadio').hidden=state.surg!=='radio';$('#ctlMan').hidden=state.surg!=='manguito';$('#ctlPtr').hidden=state.surg!=='ptr';$('#e-j').setAttribute('aria-pressed',state.edad!=='m');$('#e-m').setAttribute('aria-pressed',state.edad==='m');
@@ -4747,7 +4752,7 @@ document.addEventListener('click',function(e){
   const a=b.dataset.act;
   if(a==='view') state.view=b.dataset.v;
   else if(a==='size'){state.size=+b.dataset.s;save();}
-  else if(a==='contrast'){state.contrast=!state.contrast;save();}
+  else if(a==='theme'){state.theme=b.dataset.v;save();}
   else if(a==='graft'){state.graft=b.dataset.g;save();}
   else if(a==='carga'){state.carga=b.dataset.c;save();}
   else if(a==='edad'){state.edad=b.dataset.e;save();}
