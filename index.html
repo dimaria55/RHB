@@ -4329,10 +4329,11 @@ function landingHtml(){
    '<ol class="steps-l"><li><b>'+tr('Crea tu perfil.')+'</b> '+tr('Solo tu nombre de pila y tu cirugía.')+'</li><li><b>'+tr('Prepárate antes de operarte.')+'</b> '+tr('La parte PRE-Cirugía está disponible aunque todavía no sepas la fecha.')+'</li><li><b>'+tr('El día de la cirugía,')+'</b> '+tr('indica lo que te hicieron en quirófano y el portal adapta tu plan.')+'</li></ol></section>';
   h+='<section class="panel" id="regForm"><div class="kick">'+tr('Empezar')+'</div><h2>'+tr('Crea tu perfil')+'</h2>'+
    '<label class="fld" style="margin-top:14px"><span class="lab">'+tr('Tu nombre de pila')+'</span><input type="text" id="regName" maxlength="30" autocomplete="given-name" placeholder="'+pfEsc(tr('Por ejemplo: Ana'))+'" value="'+pfEsc(d.name||'')+'"></label>'+
-   '<fieldset class="orf" style="margin-top:16px"><legend>'+tr('¿De qué te vas a operar o te han operado?')+'</legend><div class="regsurg">'+
+   (pp?'<div class="note" style="margin-top:16px;background:var(--surface2)"><p><b>'+tr('Tu cirugía')+':</b> '+tr(SURG_N[pp.srg])+' 🔒</p><p style="margin-top:6px"><b>'+tr('Fecha de la cirugía')+':</b> '+fullDate(pp.date)+' 🔒</p><p class="src" style="margin-top:6px">'+tr('Vienen de tu código Premium y no se pueden cambiar.')+'</p></div><input type="radio" name="regSurg" value="'+pp.srg+'" checked hidden>':'')+
+   (pp?'<div hidden>':'')+'<fieldset class="orf" style="margin-top:16px"><legend>'+tr('¿De qué te vas a operar o te han operado?')+'</legend><div class="regsurg">'+
    SURG_K.map(function(k){return '<label class="regopt"><input type="radio" name="regSurg" value="'+k+'"'+(d.surg===k?' checked':'')+(pp&&pp.srg!==k?' disabled':'')+'> <span>'+tr(SURG_N[k])+'</span></label>';}).join('')+'</div></fieldset>'+
    '<label class="fld" style="margin-top:16px"><span class="lab">'+tr('Fecha de la cirugía (opcional)')+'</span><input type="date" id="regDate" value="'+pfEsc(d.date||'')+'"'+(pp?' disabled':'')+'></label>'+
-   '<p class="src" style="margin-top:4px">'+tr('Si aún no la sabes, déjala en blanco. Podrás ponerla más adelante.')+'</p>'+
+   '<p class="src" style="margin-top:4px">'+tr('Si aún no la sabes, déjala en blanco. Podrás ponerla más adelante.')+'</p>'+(pp?'</div>':'')+
    '<p class="note" style="margin-top:14px;background:var(--surface2)">🔒 '+tr('Tu perfil se guarda solo en este dispositivo y no se envía a ningún servidor. No escribas apellidos ni otros datos personales.')+'</p>'+
    (state.regErr?'<p class="note warn" role="alert" style="margin-top:10px">'+tr(state.regErr)+'</p>':'')+
    '<p style="margin-top:14px"><button class="cta big" data-act="pfcreate">'+tr('Crear mi perfil')+'</button></p></section>';
