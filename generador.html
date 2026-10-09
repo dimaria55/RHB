@@ -175,6 +175,7 @@ async function gen(){
   S.res={code:code,exp:exp,link:link,det:S.orOn?orTxt():''};S.note='';S.num=nextNum();
 }
 document.addEventListener('click',function(e){const b=e.target.closest('[data-a]');if(b){act(b.dataset.a,b);return;}const n=e.target.closest('nav button');if(n){readTexts();S.tab=n.dataset.t;S.msg='';view();}});
+document.addEventListener('input',function(e){if(e.target.id==='dt'&&e.target.value&&e.target.value!==S.date){S.date=e.target.value;S.num=nextNum();S.res=null;S.err='';const o=document.querySelector('.step output');if(o)o.textContent=S.num;}});
 document.addEventListener('change',function(e){if(e.target.id==='kf'){const f=e.target.files[0];if(!f)return;f.text().then(function(t){try{return keyReady(parseKeyText(t));}catch(x){S.err='No se pudo leer ese archivo.';view();}});}if(e.target.id==='dt'){S.date=e.target.value;S.num=nextNum();S.res=null;view();}});
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='pin')act('unlock');});
 S.date=today();view();
