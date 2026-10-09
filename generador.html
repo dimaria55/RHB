@@ -62,7 +62,7 @@ function orVis(f,v){return !f.when||f.when(v);}
 function orDone(){const F=ORQ[S.srg]||[];return F.length&&F.every(function(f){return !orVis(f,S.orv)||S.orv[f.k]!==undefined;});}
 function orStr(){return (ORQ[S.srg]||[]).map(function(f){return orVis(f,S.orv)?String(S.orv[f.k]):'x';}).join('');}
 function orTxt(){return (ORQ[S.srg]||[]).filter(function(f){return orVis(f,S.orv);}).map(function(f){return f.lab+': '+f.o[S.orv[f.k]];}).join(' · ');}
-let S={orOn:false,orv:{},tab:'new',priv:null,fp:'',srg:'LCA',date:'',num:1,months:12,note:'',res:null,err:'',tmpKey:null,msg:''};
+let S={orOn:true,orv:{},tab:'new',priv:null,fp:'',srg:'LCA',date:'',num:1,months:12,note:'',res:null,err:'',tmpKey:null,msg:''};
 function p2(n){return (n<10?'0':'')+n;}
 function today(){const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
 function dmy(i){const p=i.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
@@ -103,7 +103,7 @@ function newV(){
   let h='<div class="card"><h2>Nuevo código de paciente</h2><span class="lab">Cirugía</span><div class="chips">'+SURG.map(function(s){return '<button class="chip'+(S.srg===s[0]?' on':'')+'" data-a="srg" data-v="'+s[0]+'"><b>'+s[1]+'</b><span>'+s[2]+'</span></button>';}).join('')+'</div>'+
   '<span class="lab">Fecha de la cirugía</span><input type="date" id="dt" value="'+esc(S.date)+'">'+orBlock()+
   '<span class="lab">Nº de paciente de ese día</span><div class="step"><button data-a="dec">−</button><output>'+S.num+'</output><button data-a="inc">+</button></div>'+
-  '<span class="lab">Validez</span><div class="chips sm">'+[6,12,18,24].map(function(m){return '<button class="chip'+(S.months===m?' on':'')+'" data-a="mo" data-v="'+m+'"><b>'+m+'</b><span>meses</span></button>';}).join('')+'</div>'+
+  '<p class="mute" style="margin-top:14px">⏱ Validez: 12 meses desde hoy</p>'+
   '<span class="lab">Nota interna (opcional, sin apellidos)</span><input id="nt" type="text" maxlength="60" autocomplete="off" value="'+esc(S.note)+'">'+
   '<button class="cta" data-a="gen">Generar código</button><p class="bad">'+esc(S.err)+'</p></div>';
   if(S.res){const r=S.res;h+='<div class="card" style="border:2px solid var(--accent)"><h2>✅ Código listo</h2><div class="big">'+esc(r.code)+'</div><p class="mute">Válido hasta '+dmy(r.exp)+'</p>'+(r.det?'<p class="mute">🏥 '+esc(r.det)+'</p>':'')+'<button class="btn wa" data-a="wa">💬 Enviar por WhatsApp</button><div class="row">'+(navigator.share?'<button class="btn" data-a="share">Compartir…</button>':'')+'<button class="btn" data-a="clink">Copiar enlace</button><button class="btn" data-a="cmsg">Copiar mensaje</button></div><div class="link">'+esc(r.link)+'</div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';}
