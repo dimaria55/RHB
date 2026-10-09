@@ -385,19 +385,16 @@ body.landing .controls{display:none}
 .ld-sec{margin-top:34px}
 .ld-sec h2{font:600 1.55rem/1.15 var(--font-display);letter-spacing:-.01em}
 .ld-p{margin:8px 0 0;color:var(--mute);max-width:40em}
-.ld-parts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px;align-items:stretch}
+.ld-parts{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 12px;margin-top:16px;align-items:start}
 @media(min-width:700px){.ld-parts{grid-template-columns:repeat(4,1fr)}}
-.ld-part{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.ld-part.open{border-color:var(--accent);grid-column:1/-1}
-.ld-pb{display:flex;justify-content:flex-start;flex-direction:column;align-items:stretch;width:100%;font:inherit;font-size:1.05rem;color:var(--ink);background:none;border:0;padding:0 0 12px;cursor:pointer;text-align:center;position:relative}
-.ld-pi{display:block;background:#f4f7fa;aspect-ratio:4/3;overflow:hidden}
-.ld-part.open .ld-pi{aspect-ratio:16/6}
-.ld-pi img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
-.ld-pb b{display:block;margin-top:10px;padding:0 28px;font-weight:600}
-.ld-chev{position:absolute;right:14px;bottom:18px;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);transition:transform .15s}
-.ld-part.open .ld-chev{transform:rotate(-135deg);bottom:14px}
-.ld-soon{margin:0;color:var(--mute);font-size:.92rem;padding:2px 2px 4px}
-.ld-opts{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
+.ld-pb{display:flex;flex-direction:column;align-items:center;font:inherit;font-size:1.02rem;color:var(--ink);background:none;border:0;padding:0;cursor:pointer;text-align:center}
+.ld-pi{display:block;width:min(100%,150px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:#f4f7fa;border:3px solid var(--line);box-sizing:border-box;transition:border-color .15s}
+.ld-pi img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transform:scale(1.05)}
+.ld-pb.open .ld-pi{border-color:var(--accent)}
+.ld-pb b{display:block;margin-top:8px;font-weight:600}
+.ld-pb.open b{color:var(--accent)}
+.ld-opts{grid-column:1/-1;display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--accent);border-radius:14px}
+.ld-soon{margin:0;color:var(--mute);font-size:.92rem;padding:2px}
 .ld-opt{display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:var(--ink);background:var(--accent-soft);border:1px solid transparent;border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px}
 .ld-opt:hover{border-color:var(--accent)}.ld-opt small{color:var(--mute);font-size:.82rem}
 .ld-sg{display:flex;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;min-height:64px}
@@ -4456,7 +4453,9 @@ function landingHtml(){
    '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="regForm">'+tr(pp?'Solo falta tu nombre':'Crear mi perfil')+'</button>'+'</div>'+
    '<ul class="ld-trust"><li>'+tr('Funciona en tu móvil')+'</li><li>'+tr('Solo tu nombre de pila')+'</li><li>'+tr('Tus datos se quedan en tu dispositivo')+'</li></ul></div></section>';
   h+='<section class="ld-sec"><h2>'+tr('¿Qué zona vas a operarte?')+'</h2><p class="ld-p">'+tr('Toca una zona y elige tu cirugía. El portal se adapta a lo que te van a hacer o a lo que te han hecho.')+'</p><div class="ld-parts">'+
-   PARTS.map(function(x){const op=state.ldOpen===x[0];return '<div class="ld-part'+(op?' open':'')+'"><button class="ld-pb" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'"><span class="ld-pi"><img src="'+PARTIMG[x[0]]+'" alt="" loading="lazy"></span><b>'+tr(x[1])+'</b><span class="ld-chev" aria-hidden="true"></span></button>'+(op?'<div class="ld-opts">'+(x[2].length?x[2].map(function(o){return '<button class="ld-opt" data-act="pfpick" data-s="'+o[0]+'"><b>'+tr(o[1])+'</b><small>'+tr(o[2])+'</small></button>';}).join(''):'<p class="ld-soon">'+tr('Todavía no hay protocolo para esta zona. Lo iremos añadiendo.')+'</p>')+'</div>':'')+'</div>';}).join('')+'</div></section>';
+   (function(){const oi=PARTS.findIndex(function(x){return x[0]===state.ldOpen;});const pe=oi<0?-1:Math.min(oi|1,PARTS.length-1);let o='';
+    PARTS.forEach(function(x,i){const op=i===oi;o+='<button class="ld-pb'+(op?' open':'')+'" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'"><span class="ld-pi"><img src="'+PARTIMG[x[0]]+'" alt="" loading="lazy"></span><b>'+tr(x[1])+'</b></button>';
+     if(i===pe){const q=PARTS[oi];o+='<div class="ld-opts">'+(q[2].length?q[2].map(function(t){return '<button class="ld-opt" data-act="pfpick" data-s="'+t[0]+'"><b>'+tr(t[1])+'</b><small>'+tr(t[2])+'</small></button>';}).join(''):'<p class="ld-soon">'+tr('Todavía no hay protocolo para esta zona. Lo iremos añadiendo.')+'</p>')+'</div>';}});return o;})()+'</div></section>';
   h+='<section class="ld-sec"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
    FT.map(function(x){return '<li>'+ldIc(x[0])+'<div><b>'+tr(x[1])+'</b><p>'+tr(x[2])+'</p></div></li>';}).join('')+'</ul></section>';
   h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te envió un enlace personal, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
