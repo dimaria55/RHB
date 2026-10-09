@@ -4868,7 +4868,7 @@ window.addEventListener('hashchange',function(){premFromHash();});
 <script>try{if(location.protocol==="https:"&&location.hostname.indexOf("github.io")>-1&&"serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");}catch(e){}</script><script>(function(){try{
 if(window.top!==window)return;
 var sa=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;if(sa)return;
-try{if(localStorage.getItem('pc-install-x')==='1')return;}catch(e){}
+try{localStorage.removeItem('pc-install-x');}catch(e){}
 var ua=navigator.userAgent,ios=/iPad|iPhone|iPod/.test(ua)&&!window.MSStream,mob=/Android|iPhone|iPad|iPod/i.test(ua)||(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
 if(!mob&&location.search.indexOf('install=1')<0)return;
 var dp=null,bar=null;
@@ -4876,14 +4876,13 @@ var css=document.createElement('style');css.textContent='#pcInst{position:sticky
 function hide(save){if(bar){bar.remove();bar=null;}if(save){try{localStorage.setItem('pc-install-x','1');}catch(e){}}}
 function show(){if(bar||!document.body)return;bar=document.createElement('div');bar.id='pcInst';
 var how=ios?'En Safari: Compartir <b style="display:inline">⎙</b> → «Añadir a pantalla de inicio»':'Menú ⋮ del navegador → «Instalar aplicación»';
-bar.innerHTML='<img src="icon-192.png" alt=""><span><b>Instala la app en tu móvil</b><small id="pcHow">Acceso directo desde la pantalla de inicio</small></span><button class="go" type="button">Instalar</button><button class="x" type="button" aria-label="Cerrar">✕</button>';
+bar.innerHTML='<img src="icon-192.png" alt=""><span><b>Instala la app en tu móvil</b><small id="pcHow">Acceso directo desde la pantalla de inicio</small></span><button class="go" type="button">Instalar</button>';
 document.body.insertBefore(bar,document.body.firstChild);
-bar.querySelector('.x').onclick=function(){hide(true);};
 bar.querySelector('.go').onclick=function(){
  if(dp){dp.prompt();dp.userChoice.then(function(){dp=null;hide(false);});}
- else{var h=document.getElementById('pcHow');h.innerHTML=how;bar.querySelector('.go').textContent='Entendido';bar.querySelector('.go').onclick=function(){hide(true);};}
+ else{var h=document.getElementById('pcHow');h.innerHTML=how;bar.querySelector('.go').textContent='Entendido';var g=bar.querySelector('.go');g.onclick=function(){hide(false);setTimeout(show,0);};}
 };}
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;show();});
-window.addEventListener('appinstalled',function(){hide(true);});
+window.addEventListener('appinstalled',function(){hide(false);});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(show,1200);});else setTimeout(show,1200);
 }catch(e){}})();</script></body></html>
