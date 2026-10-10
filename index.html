@@ -4410,7 +4410,7 @@ function profileHtml(){
   let h='<section class="panel" id="miPerfil"><div class="kick">'+tr('Mi perfil')+'</div>';
   if(state.pfName)h+='<div class="pfrow"><label class="fld" style="flex:1"><span class="lab">'+tr('Nombre de pila')+'</span><input type="text" id="pfNameEd" maxlength="30" autocomplete="given-name" value="'+pfEsc(p.name)+'"></label><button class="cta" data-act="pfnamesave">'+tr('Guardar')+'</button><button class="ghost" data-act="pfnamecancel">'+tr('Cancelar')+'</button></div>';
   else h+='<h2>'+pfEsc(p.name)+' <button class="linkish" data-act="pfname">'+tr('Cambiar nombre')+'</button></h2>';
-  h+='<dl class="pfdl"><div><dt>'+tr('Cirugía')+'</dt><dd>'+tr(SURG_N[p.surg])+'</dd></div><div><dt>'+tr('Fecha de la cirugía')+'</dt><dd>'+(state.date?fullDate(state.date):tr('Aún sin fecha. Puedes ponerla arriba, junto a «Cirugía», cuando la sepas.'))+'</dd></div>'+(state.premInfo?'<div><dt>Premium</dt><dd>'+pfEsc(state.premInfo.code)+' · '+tr('activo hasta')+' '+fullDate(state.premInfo.exp)+'</dd></div>':'')+'</dl>';
+  h+='<dl class="pfdl"><div><dt>'+tr('Cirugía')+'</dt><dd>'+tr(SURG_N[p.surg])+'</dd></div><div><dt>'+tr('Fecha de la cirugía')+'</dt><dd>'+(state.date?fullDate(state.date):tr('Aún sin fecha'))+'</dd></div>'+(state.premInfo?'<div><dt>Premium</dt><dd>'+pfEsc(state.premInfo.code)+' · '+tr('activo hasta')+' '+fullDate(state.premInfo.exp)+'</dd></div>':'')+'</dl>';
   if(state.premium){
   h+='<h3 style="margin-top:16px">'+tr('Lo que te hicieron en quirófano')+'</h3>';
   if(p.or)h+=orSummaryHtml();
@@ -4499,6 +4499,8 @@ function docAccessHtml(){
   return '<div class="docacc"><label class="fld"><span class="lab">'+tr('Código profesional')+'</span><input type="password" id="docCode" autocomplete="off" spellcheck="false"></label> <button class="ghost" data-act="pfdocin">'+tr('Entrar')+'</button> <button class="linkish" data-act="pfdocno">'+tr('Cancelar')+'</button>'+(state.docErr?'<p class="src" role="alert" style="color:var(--crit);margin-top:6px">'+tr('Código incorrecto.')+'</p>':'')+'</div>';
 }
 /* Cabecera, pestañas y pie según el modo */
+const PHRASES=['Cada día es un paso más en tu recuperación.','Un día a día constante hace la diferencia.','Tu progreso empieza con el esfuerzo de hoy.','Paciencia y constancia: estás en el camino correcto.','Avanza a tu ritmo, sin prisas pero con firmeza.','Escucha a tu cuerpo y sigue tu plan con tranquilidad.','Tu recuperación requiere tiempo; celebra cada pequeño avance.','¡Vamos a por el objetivo de hoy!','Tu esfuerzo diario da sus frutos.','Cada ejercicio te acerca a tu meta.'];
+function dayPhrase(){const n=PHRASES.length,t=new Date(),d=Math.floor(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())/864e5),c=Math.floor(d/n),i=d%n;let a=c*2654435761>>>0;const rnd=function(){a=(a+0x6D2B79F5)>>>0;let x=a;x=Math.imul(x^x>>>15,x|1);x^=x+Math.imul(x^x>>>7,x|61);return((x^x>>>14)>>>0)/4294967296;};const o=PHRASES.map(function(_,k){return k;});for(let k=n-1;k>0;k--){const j=Math.floor(rnd()*(k+1));const q=o[k];o[k]=o[j];o[j]=q;}return PHRASES[o[i]];}
 function pfHeader(){
   const pm=!state.docOK,onb=pfNeedsOnb();
   const tv=document.getElementById('tbView');if(tv)tv.hidden=pm;
@@ -4510,7 +4512,7 @@ function pfHeader(){
    if(h1)h1.textContent=pt?'Protocolo de rehabilitación de:':'Consulta Dr. De María Prieto';
    if(hs){hs.hidden=!pt;hs.textContent=pt?tr(SURG_N[state.prof.surg]).replace(' · ',' - '):'';}
    if(sb)sb.hidden=pt;}
-  const he=document.getElementById('hello');if(he){he.hidden=!(pm&&state.prof);he.textContent=state.prof?'Hola, '+state.prof.name+' 👋':'';}
+  const he=document.getElementById('hello');if(he){he.hidden=!(pm&&state.prof);he.textContent=state.prof?'Hola, '+state.prof.name+' 👋 · '+dayPhrase():'';}
   const da=document.getElementById('docAccess');if(da)da.innerHTML=docAccessHtml();
 }
 document.addEventListener('click',function(e){
