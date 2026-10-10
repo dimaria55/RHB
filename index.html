@@ -118,6 +118,7 @@ main{margin-top:18px;display:flex;flex-direction:column;gap:14px}
 .src-list li{display:flex;flex-direction:column;gap:2px}
 a{color:var(--accent)}
 .foot{margin-top:26px;color:var(--mute);font-size:.8rem}
+.notice{font-size:.74rem;line-height:1.45}.notice p{margin:6px 0}
 
 /* ===== Referencias (pie discreto) ===== */
 .allrefs{margin-top:22px;padding-top:10px;border-top:1px solid var(--line);font-size:.68rem;line-height:1.4;color:var(--mute)}
@@ -340,7 +341,7 @@ div.docacc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-item
 body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
-body.landing header,body.landing #foot,body.landing #tabs{display:none}
+body.landing header,body.landing #tabs{display:none}
 body.pat h1{font-size:1rem;font-weight:500;color:var(--mute)}
 .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 18px}
 @media(min-width:620px){.apps{grid-template-columns:repeat(4,1fr)}}
@@ -542,7 +543,7 @@ body.editing [data-ok]:focus{outline:2px solid var(--accent);background:var(--ac
   <main id="view"></main>
 
   <div id="docAccess"></div>
-  <p class="foot" id="foot">Información educativa general. No sustituye la valoración de su cirujano. Las semanas son orientativas: lo que decide el paso a la siguiente etapa son los criterios.</p>
+  <div class="foot notice" id="foot"></div>
   <div id="allrefs" class="allrefs"></div>
   <p class="demo" id="demo"></p>
 </div>
@@ -2989,6 +2990,7 @@ function load(){try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(!o)
   if(o.carga==='total'||o.carga==='parcial')state.carga=o.carga;
   if(o.fij==='n'||o.fij==='c')state.fij=o.fij;
   state.prec=!!o.prec;}catch(e){}}
+const NOTICE_HTML='<p><b>🔒 Privacidad:</b> Tu información no se envía a ningún servidor y se guarda únicamente en tu dispositivo; no introduzcas datos de identificación personal.</p><p><b>🏥 Aviso médico:</b> Este portal ofrece contenido exclusivamente informativo y orientativo. No constituye un diagnóstico médico ni sustituye las indicaciones de tu equipo médico o especialista. Ante cualquier duda o síntoma de alarma, acude a tu centro médico.</p>';
 function themeNow(){if(state.theme==='light'||state.theme==='dark')return state.theme;try{return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){return 'light';}}
 function applyA11y(){
   const w=document.querySelector('.wrap');
@@ -4482,7 +4484,6 @@ function landingHtml(){
   h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te envió un enlace personal, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
   h+='<section class="ld-sec ld-doc"><div class="ld-avatar"><img src="img/doctor.jpg" alt="" onerror="this.remove()"><span>JM</span></div><div><h2>'+tr('Quién está detrás')+'</h2><p class="ld-p">'+tr('El Dr. José Manuel De María Prieto, de Cirugía Ortopédica y Traumatología, ha preparado este portal con la información que se explica en consulta, para que la tengas siempre a mano.')+'</p></div></section>';
   if(pp)h+=landingFormHtml();
-  h+='<section class="ld-sec ld-foot"><p><b>🔒 '+tr('Privacidad:')+'</b> '+tr('Tu información no se envía a ningún servidor y se guarda únicamente en tu dispositivo; no introduzcas datos de identificación personal.')+'</p><p><b>🏥 '+tr('Aviso médico:')+'</b> '+tr('Este portal ofrece contenido exclusivamente informativo y orientativo. No constituye un diagnóstico médico ni sustituye las indicaciones de tu equipo médico o especialista. Ante cualquier duda o síntoma de alarma, acude a tu centro médico.')+'</p></section>';
   return h;
 }
 function docAccessHtml(){
@@ -4735,7 +4736,7 @@ function render(){
   const set=function(id,t){const e=$(id);if(e)e.innerHTML=t;};
   set('#l-view',u('view'));set('#v-pac',u('patient'));set('#v-med',u('doctor'));set('#l-size',u('size'));set('#l-con','Fondo');
   (function(){const e=$('#fecha');if(e&&e.value!==(state.date||''))e.value=state.date||'';})();
-  set('#sub',u('sub'));set('#surgLab',u('surg'));set('#optLca',u('optLca'));set('#foot',u('foot'));
+  set('#sub',u('sub'));set('#surgLab',u('surg'));set('#optLca',u('optLca'));(function(){const f=$('#foot');if(f)f.innerHTML=NOTICE_HTML;})();
   set('#demo',doc()?u('demoDoc'):u('demoPac'));
   set('#pcode',planCode());set('#copycode',state.copied?u('copied'):u('copy'));
   $('#v-pac').setAttribute('aria-pressed',!doc());$('#v-med').setAttribute('aria-pressed',doc());
