@@ -4509,7 +4509,7 @@ function pfHeader(){
   if(sel)sel.hidden=pm;
   if(fx){fx.hidden=true;fx.textContent='';}
   {const h1=document.getElementById('hTitle'),hs=document.getElementById('hSurg'),sb=document.getElementById('sub'),pt=pm&&!!state.prof;
-   if(h1)h1.textContent=pt?'Protocolo de rehabilitación de:':'Consulta Dr. De María Prieto';
+   if(h1)h1.textContent=pt?'Guía de recuperación de:':'Consulta Dr. De María Prieto';
    if(hs){hs.hidden=!pt;hs.textContent=pt?tr(SURG_N[state.prof.surg]).replace(' · ',' - '):'';}
    if(sb)sb.hidden=pt;}
   const he=document.getElementById('hello');if(he){he.hidden=!(pm&&state.prof);he.textContent=state.prof?'Hola, '+state.prof.name+' 👋 · '+dayPhrase():'';}
