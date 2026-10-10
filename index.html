@@ -380,7 +380,7 @@ body.pat .ld-hero h1,.ld-hero h1{font:600 clamp(1.75rem,7.2vw,3rem)/1.1 var(--fo
 .ld-lead{margin:16px 0 0;font-size:1.2rem;font-weight:600;line-height:1.35;max-width:30em;color:#fff}
 .ld-checks{margin-top:12px;flex-direction:column;gap:8px;font-size:1rem;color:#e8f3f7}
 .ld-trust.ld-trust.ld-checks li::before{content:"•";color:#f6d9a3;font-weight:700;margin-right:9px}.ld-checks li{padding-left:2px}
-.ld-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.ld-cta{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:24px}
 .ld-btn{font:600 1rem var(--font-body);border:2px solid #fff;background:#fff;color:#0a4a63;border-radius:999px;padding:13px 24px;cursor:pointer;min-height:48px}
 .ld-btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
 .ld-btn:hover{filter:brightness(.96)}
@@ -4475,13 +4475,13 @@ function landingHtml(){
    '<div class="ld-hero-in">'+
    '<h1>'+tr('El plan de rehabilitación, directo en el móvil')+'</h1>'+
    '<ul class="ld-trust ld-checks"><li>'+tr('Plan semanal de ejercicios adaptado al dolor y a la evolución')+'</li><li>'+tr('Seguimiento del progreso día a día')+'</li><li>'+tr('Respuestas rápidas a las dudas sobre la lesión o cirugía')+'</li></ul>'+
-   '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="'+(pp?'regForm':'zonas')+'">'+tr(pp?'Solo falta tu nombre':'Comenzar mi plan')+'</button>'+'</div>'+
+   '<div class="ld-cta">'+(pp?'':'<button class="ld-btn ghost" data-act="pfinfo" aria-expanded="'+!!state.ldInfo+'">'+tr('Qué vas a encontrar')+'</button>')+'<button class="ld-btn" data-act="pfgo" data-t="'+(pp?'regForm':'zonas')+'">'+tr(pp?'Solo falta tu nombre':'Comenzar mi plan')+'</button>'+'</div>'+
    '<ul class="ld-trust"><li>'+tr('Datos 100% seguros y privados en tu móvil')+'</li><li>'+tr('Sin correo ni contraseña')+'</li><li>'+tr('Acceso inmediato')+'</li></ul></div></section>';
-  h+='<section class="ld-sec" id="zonas"><h2>'+tr('¿Qué zona quieres tratar?')+'</h2><p class="ld-p">'+tr('Toca la parte del cuerpo donde tienes molestias o vas a recuperarte.')+'</p><div class="ld-parts'+(state.ldOpen?' one':'')+'">'+
+  if(pp||state.ldZ||state.ldOpen)h+='<section class="ld-sec" id="zonas"><h2>'+tr('¿Qué zona quieres tratar?')+'</h2><p class="ld-p">'+tr('Toca la parte del cuerpo donde tienes molestias o vas a recuperarte.')+'</p><div class="ld-parts'+(state.ldOpen?' one':'')+'">'+
    (function(){const oi=PARTS.findIndex(function(x){return x[0]===state.ldOpen;});const pe=oi;let o='';
     PARTS.forEach(function(x,i){const op=i===oi;if(oi>=0&&!op)return;o+='<button class="ld-pb'+(op?' open':'')+'" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'"><span class="ld-pi"><img src="'+PARTIMG[x[0]]+'" alt="" loading="lazy"></span><b>'+tr(x[1])+'</b>'+(op?'<small class="ld-back">'+tr('Toca de nuevo para ver todas las zonas')+'</small>':'')+'</button>';
      if(i===pe){const q=PARTS[oi];const sb=state.ldSub||'';o+='<div class="ld-opts"><button class="ld-sub'+(sb==='sin'?' on':'')+'" data-act="pfsub" data-m="sin"><b>'+tr('Sin cirugía')+'</b><em>'+tr('Tratamiento de dolor o lesión')+'</em><small>'+tr('Incluye: epicondilitis (codo de tenista), tendinitis, sobrecarga o esguince de tobillo.')+'</small></button>'+(sb==='sin'?'<p class="ld-soon">'+tr('Todavía no hay protocolos de esta zona sin cirugía. Los iremos añadiendo.')+'</p>':'')+'<button class="ld-sub'+(sb==='con'?' on':'')+'" data-act="pfsub" data-m="con"><b>'+tr('Con cirugía')+'</b><em>'+tr('Preparación o recuperación de cirugía')+'</em><small>'+tr('Incluye: qué hacer antes de operarte, cuidados tras el quirófano y rehabilitación posterior paso a paso.')+'</small></button>'+(sb==='con'?(q[2].length?q[2].map(function(t){return '<button class="ld-opt" data-act="pfpick" data-s="'+t[0]+'"><b>'+tr(t[1])+'</b><small>'+tr(t[2])+'</small></button>';}).join(''):'<p class="ld-soon">'+tr('Todavía no hay protocolo para esta zona. Lo iremos añadiendo.')+'</p>'):'')+'</div>';}});return o;})()+'</div></section>';
-  h+='<section class="ld-sec"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
+  if(state.ldInfo)h+='<section class="ld-sec" id="info"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
    FT.map(function(x){return '<li>'+ldIc(x[0])+'<div><b>'+tr(x[1])+'</b><p>'+tr(x[2])+'</p></div></li>';}).join('')+'</ul></section>';
   h+='<section class="ld-sec ld-doc"><div class="ld-avatar"><img src="img/doctor.jpg" alt="" onerror="this.remove()"><span>JM</span></div><div><h2>'+tr('Soy el Dr. José Manuel De María Prieto,')+'<span>'+tr('Especialista en Cirugía Ortopédica y Traumatología')+'</span>'+'</h2><p class="ld-p" lang="es">'+shy(tr('«He diseñado este portal para acompañarte más allá de la consulta. Es un espacio para darte, sin prisas, toda la información que importa: los ejercicios explicados paso a paso, respuestas rápidas a dudas frecuentes y el seguimiento de tu evolución.»'))+'</p></div></section>';
   if(pp)h+=landingFormHtml();
@@ -4512,7 +4512,8 @@ document.addEventListener('click',function(e){
   const b=e.target.closest&&e.target.closest('[data-act^="pf"]');if(!b)return;
   const a=b.dataset.act;
   e.stopPropagation();e.preventDefault();
-  if(a==='pfgo'){const t=document.getElementById(b.dataset.t);if(t){try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(err){t.scrollIntoView();}const f=t.querySelector('input[type=text]');if(f&&b.dataset.t!=='premBox')setTimeout(function(){try{f.focus({preventScroll:true});}catch(err){}},500);}return;}
+  if(a==='pfinfo'){state.ldInfo=!state.ldInfo;render();if(state.ldInfo){const t=document.getElementById('info');if(t){try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(err){t.scrollIntoView();}}}return;}
+  if(a==='pfgo'){if(b.dataset.t==='zonas'&&!state.ldZ){state.ldZ=true;render();}const t=document.getElementById(b.dataset.t);if(t){try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(err){t.scrollIntoView();}const f=t.querySelector('input[type=text]');if(f&&b.dataset.t!=='premBox')setTimeout(function(){try{f.focus({preventScroll:true});}catch(err){}},500);}return;}
   if(a==='pfpart'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm});state.ldOpen=state.ldOpen===b.dataset.p?'':b.dataset.p;state.ldSub='';render();return;}
   if(a==='pfsub'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm});state.ldSub=state.ldSub===b.dataset.m?'':b.dataset.m;render();return;}
   if(a==='pfpick'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm,surg:b.dataset.s});state.regErr='';if(state.premPending){render();const t=document.getElementById('regForm');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});return;}state.ldStep='perfil';render();window.scrollTo(0,0);return;}
