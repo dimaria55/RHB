@@ -342,7 +342,7 @@ body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
 body.landing header,body.landing #tabs{display:none}
-body.ld-info .topbar,body.ld-info #pcInst,body.ld-info #docAccess,body.ld-info #foot,body.ld-info #allrefs,body.ld-info #demo,body.ld-info .a11y,body.ld-info .sizebar{display:none!important}
+body.ld-info .topbar,body.ld-info #pcInst,body.ld-info #docAccess,body.ld-info #foot,body.ld-info #allrefs,body.ld-info #demo,body.ld-info .a11y,body.ld-info .sizebar,body.ld-zon .topbar,body.ld-zon #pcInst{display:none!important}body.ld-zon .wrap{padding-top:6px}body.ld-zon .ld-sec{margin-top:0;padding-top:0}body.ld-zon #zonas .ld-backbtn{margin-bottom:0}body.ld-zon #zonas h2{margin-top:4px}
 body.ld-info .wrap{padding-top:6px}body.ld-info .ld-sec{margin-top:0;padding-top:0}body.ld-info #info .ld-backbtn{margin-bottom:0}body.ld-info #info h2{margin-top:4px}
 body.pat h1{font-size:1rem;font-weight:500;color:var(--mute)}
 .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 18px}
@@ -4474,7 +4474,7 @@ function landingHtml(){
   let h='';
   const sc=pp?'home':(state.ldInfo?'info':((state.ldZ||state.ldOpen)?'zonas':'home'));
   const BK='<button class="ld-backbtn" data-act="pfhome" type="button">← '+tr('Volver')+'</button>';
-  document.body.classList.toggle('ld-info',sc==='info'&&!pp);
+  document.body.classList.toggle('ld-info',sc==='info'&&!pp);document.body.classList.toggle('ld-zon',sc==='zonas'&&!pp);
   if(sc!=='info')h+=premBanner();
   if(sc==='home')h+='<section class="ld-hero"><img class="ld-photo" src="img/portada.jpg" alt="" onerror="this.remove()">'+
    '<span class="ld-sun" aria-hidden="true"></span><svg class="ld-sea" viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><path d="M0 92c50-24 100 20 200-4s150-14 200 8v64H0z" fill="#ffffff" opacity=".10"/><path d="M0 112c60-22 110 16 210-6s130-8 190 6v48H0z" fill="#ffffff" opacity=".14"/><path d="M0 134c70-16 120 10 220-4s120-6 180 4v26H0z" fill="#ffffff" opacity=".22"/></svg>'+
