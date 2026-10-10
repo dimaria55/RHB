@@ -400,6 +400,10 @@ body.pat .ld-hero h1,.ld-hero h1{font:600 clamp(1.75rem,7.2vw,3rem)/1.1 var(--fo
 .ld-sub{display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px;gap:2px}
 .ld-sub b{font-size:1.02rem}.ld-sub em{font-style:normal;color:var(--accent);font-weight:500;font-size:.92rem}.ld-sub small{color:var(--mute);font-size:.82rem;line-height:1.35;margin-top:4px}
 .ld-sub.on{border-color:var(--accent);background:var(--accent-soft)}
+.ld-parts.one{grid-template-columns:1fr;justify-items:center}
+.ld-parts.one .ld-pb{width:min(100%,320px)}.ld-parts.one .ld-pi{width:min(70%,170px)}
+.ld-parts.one .ld-opts{width:100%;justify-self:stretch}
+.ld-back{display:block;margin-top:2px;font-size:.78rem;font-weight:400;color:var(--mute)}
 .ld-soon{margin:0;color:var(--mute);font-size:.92rem;padding:2px}
 .ld-opt{display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:var(--ink);background:var(--accent-soft);border:1px solid transparent;border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px}
 .ld-opt:hover{border-color:var(--accent)}.ld-opt small{color:var(--mute);font-size:.82rem}
@@ -4458,9 +4462,9 @@ function landingHtml(){
    '<ul class="ld-trust ld-checks"><li>'+tr('Plan semanal de ejercicios adaptado al dolor y a la evolución')+'</li><li>'+tr('Seguimiento del progreso día a día')+'</li><li>'+tr('Respuestas rápidas a las dudas sobre la lesión o cirugía')+'</li></ul>'+
    '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="regForm">'+tr(pp?'Solo falta tu nombre':'Comenzar mi plan')+'</button>'+'</div>'+
    '<ul class="ld-trust"><li>'+tr('Datos seguros')+'</li><li>'+tr('100% privados en tu móvil')+'</li><li>'+tr('Sin correo ni contraseña')+'</li><li>'+tr('Acceso inmediato')+'</li></ul></div></section>';
-  h+='<section class="ld-sec"><h2>'+tr('¿Qué zona quieres tratar?')+'</h2><p class="ld-p">'+tr('Toca la parte del cuerpo donde tienes molestias o vas a recuperarte.')+'</p><div class="ld-parts">'+
+  h+='<section class="ld-sec"><h2>'+tr('¿Qué zona quieres tratar?')+'</h2><p class="ld-p">'+tr('Toca la parte del cuerpo donde tienes molestias o vas a recuperarte.')+'</p><div class="ld-parts'+(state.ldOpen?' one':'')+'">'+
    (function(){const oi=PARTS.findIndex(function(x){return x[0]===state.ldOpen;});const pe=oi<0?-1:Math.min(oi|1,PARTS.length-1);let o='';
-    PARTS.forEach(function(x,i){const op=i===oi;o+='<button class="ld-pb'+(op?' open':'')+'" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'"><span class="ld-pi"><img src="'+PARTIMG[x[0]]+'" alt="" loading="lazy"></span><b>'+tr(x[1])+'</b></button>';
+    PARTS.forEach(function(x,i){const op=i===oi;if(oi>=0&&!op)return;o+='<button class="ld-pb'+(op?' open':'')+'" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'"><span class="ld-pi"><img src="'+PARTIMG[x[0]]+'" alt="" loading="lazy"></span><b>'+tr(x[1])+'</b>'+(op?'<small class="ld-back">'+tr('Toca de nuevo para ver todas las zonas')+'</small>':'')+'</button>';
      if(i===pe){const q=PARTS[oi];const sb=state.ldSub||'';o+='<div class="ld-opts"><button class="ld-sub'+(sb==='sin'?' on':'')+'" data-act="pfsub" data-m="sin"><b>'+tr('Sin cirugía')+'</b><em>'+tr('Tratamiento de dolor o lesión')+'</em><small>'+tr('Incluye: epicondilitis (codo de tenista), tendinitis, sobrecarga o esguince de tobillo.')+'</small></button>'+(sb==='sin'?'<p class="ld-soon">'+tr('Todavía no hay protocolos de esta zona sin cirugía. Los iremos añadiendo.')+'</p>':'')+'<button class="ld-sub'+(sb==='con'?' on':'')+'" data-act="pfsub" data-m="con"><b>'+tr('Con cirugía')+'</b><em>'+tr('Preparación o recuperación de cirugía')+'</em><small>'+tr('Incluye: qué hacer antes de operarte, cuidados tras el quirófano y rehabilitación posterior paso a paso.')+'</small></button>'+(sb==='con'?(q[2].length?q[2].map(function(t){return '<button class="ld-opt" data-act="pfpick" data-s="'+t[0]+'"><b>'+tr(t[1])+'</b><small>'+tr(t[2])+'</small></button>';}).join(''):'<p class="ld-soon">'+tr('Todavía no hay protocolo para esta zona. Lo iremos añadiendo.')+'</p>'):'')+'</div>';}});return o;})()+'</div></section>';
   h+='<section class="ld-sec"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
    FT.map(function(x){return '<li>'+ldIc(x[0])+'<div><b>'+tr(x[1])+'</b><p>'+tr(x[2])+'</p></div></li>';}).join('')+'</ul></section>';
