@@ -378,7 +378,7 @@ body.landing .topbar,body.pat.landing .topbar{border-top:0;margin:0;padding:0;mi
 body.pat .ld-hero h1,.ld-hero h1{font:600 clamp(1.75rem,7.2vw,3rem)/1.1 var(--font-display);letter-spacing:-.02em;margin:0;color:#fff;text-wrap:balance}
 .ld-lead{margin:16px 0 0;font-size:1.2rem;font-weight:600;line-height:1.35;max-width:30em;color:#fff}
 .ld-checks{margin-top:12px;flex-direction:column;gap:8px;font-size:1rem;color:#e8f3f7}
-.ld-checks li{padding-left:2px}
+.ld-trust.ld-trust.ld-checks li::before{content:"•";color:#f6d9a3;font-weight:700;margin-right:9px}.ld-checks li{padding-left:2px}
 .ld-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 .ld-btn{font:600 1rem var(--font-body);border:2px solid #fff;background:#fff;color:#0a4a63;border-radius:999px;padding:13px 24px;cursor:pointer;min-height:48px}
 .ld-btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
@@ -426,7 +426,7 @@ body.pat .ld-hero h1,.ld-hero h1{font:600 clamp(1.75rem,7.2vw,3rem)/1.1 var(--fo
 .ld-avatar{position:relative;flex:none;width:84px;height:84px;border-radius:50%;overflow:hidden;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 1.5rem var(--font-display)}
 .ld-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ld-doc h2{font-size:1.25rem}
-.ld-foot{color:var(--mute);font-size:.85rem}.ld-foot p{margin:6px 0}
+.ld-foot{color:var(--mute);font-size:.74rem;line-height:1.45}.ld-foot p{margin:6px 0}
 .ld-foot .ld-ic{vertical-align:-3px}
 @media (max-width:420px){.ld-hero-in{padding:28px 18px 70px}.ld-doc{flex-direction:column;align-items:flex-start}}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
@@ -4482,7 +4482,7 @@ function landingHtml(){
   h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te envió un enlace personal, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
   h+='<section class="ld-sec ld-doc"><div class="ld-avatar"><img src="img/doctor.jpg" alt="" onerror="this.remove()"><span>JM</span></div><div><h2>'+tr('Quién está detrás')+'</h2><p class="ld-p">'+tr('El Dr. José Manuel De María Prieto, de Cirugía Ortopédica y Traumatología, ha preparado este portal con la información que se explica en consulta, para que la tengas siempre a mano.')+'</p></div></section>';
   if(pp)h+=landingFormHtml();
-  h+='<section class="ld-sec ld-foot"><p>'+ldIc('lock').replace('28','16').replace('28','16')+' '+tr('Tu perfil se guarda solo en este dispositivo. No escribas apellidos ni otros datos personales.')+'</p><p>'+tr('Información educativa general. No sustituye la valoración de tu cirujano: ante cualquier duda o síntoma de alarma, contacta con tu equipo.')+'</p></section>';
+  h+='<section class="ld-sec ld-foot"><p><b>🔒 '+tr('Privacidad:')+'</b> '+tr('Tu información no se envía a ningún servidor y se guarda únicamente en tu dispositivo; no introduzcas datos de identificación personal.')+'</p><p><b>🏥 '+tr('Aviso médico:')+'</b> '+tr('Este portal ofrece contenido exclusivamente informativo y orientativo. No constituye un diagnóstico médico ni sustituye las indicaciones de tu equipo médico o especialista. Ante cualquier duda o síntoma de alarma, acude a tu centro médico.')+'</p></section>';
   return h;
 }
 function docAccessHtml(){
