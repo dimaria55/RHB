@@ -340,7 +340,7 @@ div.docacc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-item
 body.editing .wrap{padding-bottom:220px}
 .editbar .note2{flex-basis:100%;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
 .editbar .note2 q{display:block;user-select:all;color:var(--ink);background:var(--surface);border-radius:6px;padding:6px 8px;quotes:none}
-body.landing header,body.landing #foot{display:none}
+body.landing header,body.landing #foot,body.landing #tabs{display:none}
 body.pat h1{font-size:1rem;font-weight:500;color:var(--mute)}
 .apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 18px}
 @media(min-width:620px){.apps{grid-template-columns:repeat(4,1fr)}}
@@ -365,6 +365,7 @@ body.pat .demo{order:100}
 body.pat .topbar{order:98}
 body.pat .topbar{margin:30px 0 0;padding-top:14px;border-top:1px solid var(--line)}
 body.landing .controls{display:none}
+body.landing .topbar,body.pat.landing .topbar{border-top:0;margin:0;padding:0;min-height:0}
 .ld-hero{position:relative;overflow:hidden;border-radius:18px;margin-top:6px;color:#fff;background:linear-gradient(165deg,#0b3f57 0%,#0a5c7a 55%,#2a8aa6 100%);isolation:isolate}
 .ld-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
 .ld-photo~.ld-sea{opacity:.8}
@@ -396,6 +397,9 @@ body.pat .ld-hero h1,.ld-hero h1{font:600 clamp(1.75rem,7.2vw,3rem)/1.1 var(--fo
 .ld-pb b{display:block;margin-top:8px;font-weight:600}
 .ld-pb.open b{color:var(--accent)}
 .ld-opts{grid-column:1/-1;display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--accent);border-radius:14px}
+.ld-sub{display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px;gap:2px}
+.ld-sub b{font-size:1.02rem}.ld-sub em{font-style:normal;color:var(--accent);font-weight:500;font-size:.92rem}.ld-sub small{color:var(--mute);font-size:.82rem;line-height:1.35;margin-top:4px}
+.ld-sub.on{border-color:var(--accent);background:var(--accent-soft)}
 .ld-soon{margin:0;color:var(--mute);font-size:.92rem;padding:2px}
 .ld-opt{display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:var(--ink);background:var(--accent-soft);border:1px solid transparent;border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px}
 .ld-opt:hover{border-color:var(--accent)}.ld-opt small{color:var(--mute);font-size:.82rem}
@@ -4450,14 +4454,14 @@ function landingHtml(){
   h+='<section class="ld-hero"><img class="ld-photo" src="img/portada.jpg" alt="" onerror="this.remove()">'+
    '<span class="ld-sun" aria-hidden="true"></span><svg class="ld-sea" viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><path d="M0 92c50-24 100 20 200-4s150-14 200 8v64H0z" fill="#ffffff" opacity=".10"/><path d="M0 112c60-22 110 16 210-6s130-8 190 6v48H0z" fill="#ffffff" opacity=".14"/><path d="M0 134c70-16 120 10 220-4s120-6 180 4v26H0z" fill="#ffffff" opacity=".22"/></svg>'+
    '<div class="ld-hero-in"><p class="ld-brand">'+tr('Dr. De María Prieto · Cirugía Ortopédica y Traumatología')+'</p>'+
-   '<h1>'+tr('La guía de rehabilitación y recuperación articular')+'</h1>'+
-   '<p class="ld-lead">'+tr('El plan de rehabilitación, directo en el móvil')+'</p>'+'<ul class="ld-trust ld-checks"><li>'+tr('Plan semanal de ejercicios adaptado al dolor y a la evolución')+'</li><li>'+tr('Seguimiento del progreso día a día')+'</li><li>'+tr('Respuestas rápidas a las dudas sobre la lesión o cirugía')+'</li></ul>'+
+   '<h1>'+tr('El plan de rehabilitación, directo en el móvil')+'</h1>'+
+   '<ul class="ld-trust ld-checks"><li>'+tr('Plan semanal de ejercicios adaptado al dolor y a la evolución')+'</li><li>'+tr('Seguimiento del progreso día a día')+'</li><li>'+tr('Respuestas rápidas a las dudas sobre la lesión o cirugía')+'</li></ul>'+
    '<div class="ld-cta"><button class="ld-btn" data-act="pfgo" data-t="regForm">'+tr(pp?'Solo falta tu nombre':'Comenzar mi plan')+'</button>'+'</div>'+
    '<ul class="ld-trust"><li>'+tr('Datos seguros')+'</li><li>'+tr('100% privados en tu móvil')+'</li><li>'+tr('Sin correo ni contraseña')+'</li><li>'+tr('Acceso inmediato')+'</li></ul></div></section>';
-  h+='<section class="ld-sec"><h2>'+tr('¿Qué zona vas a operarte?')+'</h2><p class="ld-p">'+tr('Toca una zona y elige tu cirugía. El portal se adapta a lo que te van a hacer o a lo que te han hecho.')+'</p><div class="ld-parts">'+
+  h+='<section class="ld-sec"><h2>'+tr('¿Qué zona quieres tratar?')+'</h2><p class="ld-p">'+tr('Toca la parte del cuerpo donde tienes molestias o vas a recuperarte.')+'</p><div class="ld-parts">'+
    (function(){const oi=PARTS.findIndex(function(x){return x[0]===state.ldOpen;});const pe=oi<0?-1:Math.min(oi|1,PARTS.length-1);let o='';
     PARTS.forEach(function(x,i){const op=i===oi;o+='<button class="ld-pb'+(op?' open':'')+'" data-act="pfpart" data-p="'+x[0]+'" aria-expanded="'+op+'"><span class="ld-pi"><img src="'+PARTIMG[x[0]]+'" alt="" loading="lazy"></span><b>'+tr(x[1])+'</b></button>';
-     if(i===pe){const q=PARTS[oi];o+='<div class="ld-opts">'+(q[2].length?q[2].map(function(t){return '<button class="ld-opt" data-act="pfpick" data-s="'+t[0]+'"><b>'+tr(t[1])+'</b><small>'+tr(t[2])+'</small></button>';}).join(''):'<p class="ld-soon">'+tr('Todavía no hay protocolo para esta zona. Lo iremos añadiendo.')+'</p>')+'</div>';}});return o;})()+'</div></section>';
+     if(i===pe){const q=PARTS[oi];const sb=state.ldSub||'';o+='<div class="ld-opts"><button class="ld-sub'+(sb==='sin'?' on':'')+'" data-act="pfsub" data-m="sin"><b>'+tr('Sin cirugía')+'</b><em>'+tr('Tratamiento de dolor o lesión')+'</em><small>'+tr('Incluye: epicondilitis (codo de tenista), tendinitis, sobrecarga o esguince de tobillo.')+'</small></button>'+(sb==='sin'?'<p class="ld-soon">'+tr('Todavía no hay protocolos de esta zona sin cirugía. Los iremos añadiendo.')+'</p>':'')+'<button class="ld-sub'+(sb==='con'?' on':'')+'" data-act="pfsub" data-m="con"><b>'+tr('Con cirugía')+'</b><em>'+tr('Preparación o recuperación de cirugía')+'</em><small>'+tr('Incluye: qué hacer antes de operarte, cuidados tras el quirófano y rehabilitación posterior paso a paso.')+'</small></button>'+(sb==='con'?(q[2].length?q[2].map(function(t){return '<button class="ld-opt" data-act="pfpick" data-s="'+t[0]+'"><b>'+tr(t[1])+'</b><small>'+tr(t[2])+'</small></button>';}).join(''):'<p class="ld-soon">'+tr('Todavía no hay protocolo para esta zona. Lo iremos añadiendo.')+'</p>'):'')+'</div>';}});return o;})()+'</div></section>';
   h+='<section class="ld-sec"><h2>'+tr('Qué vas a encontrar')+'</h2><ul class="ld-ft">'+
    FT.map(function(x){return '<li>'+ldIc(x[0])+'<div><b>'+tr(x[1])+'</b><p>'+tr(x[2])+'</p></div></li>';}).join('')+'</ul></section>';
   h+='<section class="ld-sec"><h2>'+tr('Cómo funciona')+'</h2><ol class="ld-steps"><li><b>'+tr('Antes de operarte')+'</b><p>'+tr('Crea tu perfil y prepárate con la parte PRE-Cirugía, aunque todavía no sepas la fecha.')+'</p></li><li><b>'+tr('El día de la cirugía')+'</b><p>'+tr('Indica lo que te hicieron en quirófano y el portal adapta tu plan. Si tu equipo te envió un enlace personal, ya viene indicado.')+'</p></li><li><b>'+tr('Durante tu recuperación')+'</b><p>'+tr('Sigue cada etapa, haz los retos y consulta tus dudas hasta tu alta.')+'</p></li></ol></section>';
@@ -4492,7 +4496,8 @@ document.addEventListener('click',function(e){
   const a=b.dataset.act;
   e.stopPropagation();e.preventDefault();
   if(a==='pfgo'){const t=document.getElementById(b.dataset.t);if(t){try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(err){t.scrollIntoView();}const f=t.querySelector('input[type=text]');if(f&&b.dataset.t!=='premBox')setTimeout(function(){try{f.focus({preventScroll:true});}catch(err){}},500);}return;}
-  if(a==='pfpart'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm});state.ldOpen=state.ldOpen===b.dataset.p?'':b.dataset.p;render();return;}
+  if(a==='pfpart'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm});state.ldOpen=state.ldOpen===b.dataset.p?'':b.dataset.p;state.ldSub='';render();return;}
+  if(a==='pfsub'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm});state.ldSub=state.ldSub===b.dataset.m?'':b.dataset.m;render();return;}
   if(a==='pfpick'){const nm=(document.getElementById('regName')||{}).value||'';state.reg=Object.assign({},state.reg||{},{name:nm,surg:b.dataset.s});render();const t=document.getElementById('regForm');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});return;}
   if(a==='pfpremno'){state.premPending=null;state.premTxt='';render();return;}
   if(a==='pfprem'){
