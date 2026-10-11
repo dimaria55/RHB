@@ -63,6 +63,11 @@ function orDone(){const F=ORQ[S.srg]||[];return F.length&&F.every(function(f){re
 function orStr(){return (ORQ[S.srg]||[]).map(function(f){return orVis(f,S.orv)?String(S.orv[f.k]):'x';}).join('');}
 function orTxt(){return (ORQ[S.srg]||[]).filter(function(f){return orVis(f,S.orv);}).map(function(f){return f.lab+': '+f.o[S.orv[f.k]];}).join(' · ');}
 let S={orOn:true,orv:{},tab:'new',priv:null,fp:'',srg:'LCA',date:'',num:1,months:12,note:'',res:null,err:'',tmpKey:null,msg:''};
+const GAP=60,LSG='pc-gen-last';
+function left(){let t=0;try{t=+localStorage.getItem(LSG)||0;}catch(e){}return Math.max(0,Math.ceil((t+GAP*1000-Date.now())/1000));}
+function genBtn(){const l=left();return '<button class="cta" id="genb" data-a="gen"'+(l?' disabled':'')+'>'+(l?'Espera '+l+' s para generar otro':'Generar código')+'</button>';}
+let tick=null;
+function startTick(){if(tick)clearInterval(tick);tick=setInterval(function(){const b=document.getElementById('genb');const l=left();if(b){b.disabled=l>0;b.textContent=l?'Espera '+l+' s para generar otro':'Generar código';}if(!l){clearInterval(tick);tick=null;}},500);}
 function p2(n){return (n<10?'0':'')+n;}
 function today(){const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
 function dmy(i){const p=i.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
@@ -89,6 +94,8 @@ function view(){
   document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===S.tab);});
   if(!S.priv){a.innerHTML=hasKey()?lockV():setupV();return;}
   a.innerHTML=S.tab==='new'?newV():S.tab==='reg'?regV():setV();
+  if(S.scroll){S.scroll=false;const r=document.getElementById('res');if(r)setTimeout(function(){r.scrollIntoView({behavior:'smooth',block:'start'});},60);}
+  if(S.tab==='new'&&left()>0)startTick();
 }
 function lockV(){return '<div class="card"><h2>🔒 Desbloquear</h2><p class="mute">Escribe tu PIN para usar la clave guardada en este dispositivo.</p><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN"><button class="cta" data-a="unlock">Desbloquear</button><p class="bad" id="perr">'+esc(S.err)+'</p><details><summary>Olvidé el PIN / quitar la clave de este dispositivo</summary><p class="mute">Esto borra la clave de este dispositivo (no la de tu archivo). Tendrás que importarla de nuevo.</p><button class="btn dng" data-a="forget">Quitar la clave de este dispositivo</button></details></div>';}
 function setupV(){
@@ -105,8 +112,8 @@ function newV(){
   '<span class="lab">Nº de paciente de ese día</span><div class="step"><button data-a="dec">−</button><output>'+S.num+'</output><button data-a="inc">+</button></div>'+
   '<p class="mute" style="margin-top:14px">⏱ Validez: 12 meses desde hoy</p>'+
   '<span class="lab">Nota interna (opcional, sin apellidos)</span><input id="nt" type="text" maxlength="60" autocomplete="off" value="'+esc(S.note)+'">'+
-  '<button class="cta" data-a="gen">Generar código</button><p class="bad">'+esc(S.err)+'</p></div>';
-  if(S.res){const r=S.res;h+='<div class="card" style="border:2px solid var(--accent)"><h2>✅ Código listo</h2><div class="big">'+esc(r.code)+'</div><p class="mute">Válido hasta '+dmy(r.exp)+'</p>'+(r.det?'<p class="mute">🏥 '+esc(r.det)+'</p>':'')+'<button class="btn wa" data-a="wa">💬 Enviar por WhatsApp</button><div class="row">'+(navigator.share?'<button class="btn" data-a="share">Compartir…</button>':'')+'<button class="btn" data-a="clink">Copiar enlace</button><button class="btn" data-a="cmsg">Copiar mensaje</button></div><div class="link">'+esc(r.link)+'</div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';}
+  genBtn()+'<p class="bad">'+esc(S.err)+'</p></div>';
+  if(S.res){const r=S.res;h+='<div class="card" id="res" style="border:2px solid var(--accent)"><h2>✅ Código listo</h2><div class="big">'+esc(r.code)+'</div><p class="mute">Válido hasta '+dmy(r.exp)+'</p>'+(r.det?'<p class="mute">🏥 '+esc(r.det)+'</p>':'')+'<button class="btn wa" data-a="wa">💬 Enviar por WhatsApp</button><div class="row">'+(navigator.share?'<button class="btn" data-a="share">Compartir…</button>':'')+'<button class="btn" data-a="clink">Copiar enlace</button><button class="btn" data-a="cmsg">Copiar mensaje</button></div><div class="link">'+esc(r.link)+'</div>'+(S.msg?'<p class="mute">'+esc(S.msg)+'</p>':'')+'</div>';}
   return h;
 }
 function orBlock(){
@@ -164,6 +171,7 @@ async function act(a,b){
 }
 async function keyReady(j){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(j.x+j.y));S.tmpKey={kty:'EC',crv:'P-256',x:j.x,y:j.y,d:j.d,ext:true};S.tmpFp=Array.from(new Uint8Array(h)).slice(0,4).map(function(b){return p2(b.toString(16));}).join('');S.err='';view();}
 async function gen(){
+  if(left()>0){S.err='Espera '+left()+' s antes de generar otro código.';return;}
   if(!S.date){S.err='Pon la fecha de la cirugía.';return;}
   const code=codeId(S.srg,S.date,S.num);
   if(reg().some(function(r){return r.code===code;})){S.err='Ya existe '+code+'. Sube el número de paciente.';return;}
@@ -172,7 +180,7 @@ async function gen(){
   const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},S.priv,new TextEncoder().encode(code+'|'+raw+(ors?'|'+ors:'')));
   const tok=code+'~'+raw+(ors?'~'+ors:'')+'~'+b64u(sig),link=getPortal().split('#')[0]+'#p='+tok;
   const r=reg();r.push({code:code,issued:today(),exp:exp,note:S.note.trim(),rev:false,tok:tok,det:S.orOn?orTxt():''});saveReg(r);
-  S.res={code:code,exp:exp,link:link,det:S.orOn?orTxt():''};S.note='';S.num=nextNum();
+  S.res={code:code,exp:exp,link:link,det:S.orOn?orTxt():''};S.note='';S.num=nextNum();S.scroll=true;try{localStorage.setItem(LSG,String(Date.now()));}catch(e){}startTick();
 }
 document.addEventListener('click',function(e){const b=e.target.closest('[data-a]');if(b){act(b.dataset.a,b);return;}const n=e.target.closest('nav button');if(n){readTexts();S.tab=n.dataset.t;S.msg='';view();}});
 document.addEventListener('input',function(e){if(e.target.id==='dt'&&e.target.value&&e.target.value!==S.date){S.date=e.target.value;S.num=nextNum();S.res=null;S.err='';const o=document.querySelector('.step output');if(o)o.textContent=S.num;}});
