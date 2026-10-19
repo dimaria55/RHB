@@ -51,9 +51,9 @@ footer{margin-top:24px;font-size:.85rem;color:var(--muted)}
 footer ul{padding-left:18px;margin:6px 0}
 footer .legal{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
 details.ex{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff}
-details.ex>summary{cursor:pointer;padding:14px;font-weight:600;list-style:none;min-height:48px}
+details.ex>summary{position:relative;padding-right:40px!important;cursor:pointer;padding:14px;font-weight:600;list-style:none;min-height:48px}
 details.ex>summary::-webkit-details-marker{display:none}
-details.ex>summary::after{content:"＋";float:right;color:var(--brand)}
+details.ex>summary::after{content:"＋";position:absolute;right:14px;top:14px;color:var(--brand)}
 details.ex[open]>summary::after{content:"－"}
 .dose{display:block;font-weight:400;font-size:.9rem;color:var(--muted)}
 .exb{padding:0 14px 12px}
