@@ -50,6 +50,16 @@ input[type=number]:focus{outline:none;border-color:var(--brand)}
 footer{margin-top:24px;font-size:.85rem;color:var(--muted)}
 footer ul{padding-left:18px;margin:6px 0}
 footer .legal{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
+details.ex{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff}
+details.ex>summary{cursor:pointer;padding:14px;font-weight:600;list-style:none;min-height:48px}
+details.ex>summary::-webkit-details-marker{display:none}
+details.ex>summary::after{content:"＋";float:right;color:var(--brand)}
+details.ex[open]>summary::after{content:"－"}
+.dose{display:block;font-weight:400;font-size:.9rem;color:var(--muted)}
+.exb{padding:0 14px 12px}
+.exb h4{margin:12px 0 4px;font-size:1rem;color:var(--brand)}
+.exb p{margin:0 0 6px}.exb ol,.exb ul{margin:0 0 6px;padding-left:22px}
+h3{font-size:1.15rem;margin:20px 0 6px;border-top:1px solid var(--line);padding-top:14px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -74,6 +84,7 @@ footer .legal{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
   <p class="small">© 2026 MiRehab · Dr. José Manuel De María Prieto</p>
 </footer>
 </main>
+<script src="datos.js"></script>
 <script>
 (function(){
 "use strict";
@@ -150,7 +161,7 @@ function viewAge(){
   var h='';
   if(saved){
     h+='<div class="card"><h2>Tu nivel</h2>'+resultBody(saved)+
-       '<div class="row"><button class="btn ghost" data-a="redo">Repetir la evaluación</button><button class="btn main" data-a="soon">Ver mi rutina</button></div></div>';
+       '<div class="row"><button class="btn ghost" data-a="redo">Repetir la evaluación</button><button class="btn main" data-a="rutina">Ver mi rutina</button></div></div>';
     app.innerHTML=h;return;
   }
   h+='<div class="card"><h2>Antes de empezar</h2>'+
@@ -207,8 +218,133 @@ function resultBody(r){
 }
 function viewResult(r){
   app.innerHTML='<div class="card"><h2>Tu nivel</h2>'+resultBody(r)+
-    '<div class="note">Tus rutinas, con los ejercicios paso a paso, estarán disponibles en la siguiente actualización de esta página. Tu nivel se guarda solo en este dispositivo.</div>'+
-    '<div class="row"><button class="btn ghost" data-a="redo">Repetir la evaluación</button><a class="btn main" style="text-decoration:none;display:flex;align-items:center;justify-content:center" href="../">Volver al inicio</a></div></div>';
+    '<div class="note">Tu nivel se guarda solo en este dispositivo.</div>'+
+    '<div class="row"><button class="btn ghost" data-a="redo">Repetir la evaluación</button><button class="btn main" data-a="rutina">Ver mi rutina</button></div></div>';
+}
+
+
+/* ================= FASE 2: Mi rutina ================= */
+var D=window.GFGA_DATA||{EX:{},PROG:{}};
+var CAL_NAMES={warm:"Calentamiento",fuerza:"Fuerza",eq:"Equilibrio",car:"Cardio",est:"Estiramientos"};
+function md(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")}
+function progKey(r){return r.prog==="65-80"?"65-80":"80+"}
+function today(){return new Date()}
+function dayNum(d){return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000)}
+function weekIdx(r){var s=r.start?new Date(r.start+"T12:00:00"):today();return Math.max(0,Math.floor((dayNum(today())-dayNum(s))/7))}
+function effLevel(r,w){return w===0?r.week1:(r.cur||r.level)}
+function mins(r){ /* [calent, fuerza, equil, cardio, estir] por sesión completa */
+  var m=r.min, hi=r.prog==="65-80"&&r.level>=0&&effLevel(r,weekIdx(r))>=3;
+  if(m===30)return hi?[5,12,5,5,3]:[5,8,10,4,3];
+  if(m===45)return hi?[5,18,7,12,3]:[5,14,15,8,3];
+  return [5,10,0,0,0];
+}
+function strengthPlan(r,lv,m){ /* [[nº ejercicios,series]...] -> lista de series por ejercicio */
+  var hi=r.prog==="65-80"&&lv>=3;
+  if(m===15)return hi?[3,3,2]:[2,2,2];
+  if(m===30)return hi?(lv===3?[2,2,2]:[3,3,3]):[2,2,2];
+  return hi?[3,3,3,3,2]:[2,2,2,2,2];
+}
+/* Semana: lista de huecos {t:"F"|"C", r:"A"|"B"|"C"} */
+function weekSlots(r,w){
+  var d=r.days, odd=(w%2===0);
+  if(d===3)return odd?[{t:"F",r:"A"},{t:"F",r:"B"},{t:"F",r:"A"}]:[{t:"F",r:"B"},{t:"F",r:"A"},{t:"F",r:"B"}];
+  if(d===4)return [{t:"F",r:"A"},{t:"C"},{t:"F",r:"B"},{t:"F",r:"C"}];
+  return [{t:"F",r:"A"},{t:"C"},{t:"F",r:"B"},{t:"C"},{t:"F",r:"C"}];
+}
+function doneKey(w,i){return "w"+w+"d"+i}
+function exBlock(id,extra){
+  var e=D.EX[id]; if(!e)return "";
+  var h='<details class="ex"><summary>'+esc(extra||e.t)+'</summary><div class="exb">';
+  e.s.forEach(function(sc){
+    if(sc.l==="Duración"&&/^4\./.test(id))return;
+    h+='<h4>'+esc(sc.l)+'</h4>';
+    if(sc.t)h+='<p>'+md(sc.t)+'</p>';
+    if(sc.items.length){var tg=sc.kind==="ol"?"ol":"ul";h+='<'+tg+'>'+sc.items.map(function(x){return '<li>'+md(x)+'</li>'}).join("")+'</'+tg+'>'}
+  });
+  return h+'</div></details>';
+}
+function itemBlock(it,note){
+  var main=exBlock(it.e[0],it.n);
+  if(it.e.length>1)it.e.slice(1).forEach(function(id){main+=exBlock(id)});
+  if(note)main=main.replace('</summary>','<span class="dose">'+esc(note)+'</span></summary>');
+  return main;
+}
+function viewSetup(){
+  var r=load(), h='<div class="card"><h2>Tu rutina</h2><p><b>¿Cuánto tiempo tienes para cada sesión?</b></p><div class="opts" id="o-min">';
+  var ms=r.prog==="65-80"?[15,30,45]:[15,30];
+  ms.forEach(function(m){h+='<button class="opt" data-a="setmin" data-v="'+m+'" aria-pressed="'+(S.setMin===m)+'">'+m+' minutos</button>'});
+  h+='</div><p style="margin-top:18px"><b>¿Cuántos días a la semana puedes hacer ejercicio?</b></p><div class="opts">';
+  [3,4,5].forEach(function(d){h+='<button class="opt" data-a="setdays" data-v="'+d+'" aria-pressed="'+(S.setDays===d)+'">'+d+' días</button>'});
+  h+='</div><p class="small" style="margin-top:12px">Con 3 días vas bien. Si puedes más, añadimos días de cardio y una tercera rutina de fuerza.</p>'+
+     '<div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="setok"'+((S.setMin&&S.setDays)?'':' disabled')+'>Ver mi semana</button></div></div>';
+  app.innerHTML=h;
+}
+function viewWeekQ(){
+  var r=load();
+  app.innerHTML='<div class="card"><h2>¿Cómo te parecieron los ejercicios?</h2><p>Ya has terminado tu semana de adaptación.</p><div class="opts">'+
+   '<button class="opt" data-a="wq" data-v="facil">Muy fáciles</button><button class="opt" data-a="wq" data-v="bien">Bien</button><button class="opt" data-a="wq" data-v="dificil">Difíciles</button></div></div>';
+}
+function viewWeek(){
+  var r=load(), w=weekIdx(r);
+  if(w>=1&&!r.wk2){viewWeekQ();return}
+  var lv=effLevel(r,w), nm=names(r.prog), slots=weekSlots(r,w), done=r.done||{};
+  var h='<div class="card"><h2>Tu semana '+(w+1)+'</h2>'+
+   '<div class="level"><b>'+lv+'</b><span>Nivel '+lv+': '+esc(nm[lv-1])+'</span></div>';
+  if(w===0)h+='<div class="note"><b>Semana de adaptación.</b> Esta semana vas un nivel por debajo para que tu cuerpo se acostumbre. Hazlo con calma.</div>';
+  h+='<ul class="weeks">';
+  slots.forEach(function(sl,i){
+    var k=doneKey(w,i), nom=sl.t==="C"?"Cardio y equilibrio":"Fuerza · rutina "+sl.r;
+    h+='<li><button class="opt" data-a="day" data-v="'+i+'"><b>Día '+(i+1)+'</b> · '+nom+(done[k]?' <span style="color:var(--ok)">✓ Hecho</span>':'')+'</button></li>';
+  });
+  h+='</ul><div class="note">Entre sesiones de fuerza deja al menos un día de descanso cuando puedas.</div>'+
+     '<div class="row"><button class="btn ghost" data-a="setup">Cambiar tiempo y días</button><button class="btn ghost" data-a="redo">Repetir la evaluación</button></div></div>';
+  app.innerHTML=h;
+}
+function viewDay(i){
+  var r=load(), w=weekIdx(r), lv=effLevel(r,w), P=D.PROG[progKey(r)][lv], sl=weekSlots(r,w)[i], m=r.min;
+  var bl=mins(r), rot=w*7+i, cardio=(sl.t==="C");
+  var tot=m, B=bl.slice();
+  if(cardio){ /* calent. 5 + cardio + equilibrio 5 + estir. 3 */
+    B=[5,0,m===15?0:5,m-(m===15?5:13),m===15?0:3]; if(m===15)B=[0,0,0,15,0];
+  }
+  var h='<div class="card"><button class="back" data-a="week">← Mi semana</button><h2>Día '+(i+1)+' · '+(cardio?"Cardio y equilibrio":"Fuerza, rutina "+sl.r)+'</h2>'+
+   '<p class="small">Nivel '+lv+' · '+m+' minutos'+(w===0?' · semana de adaptación':'')+'</p>';
+  function head(t,mn){return '<h3>'+t+(mn?' <span class="small">· '+mn+' min</span>':'')+'</h3>'}
+  var needWarm=B[0]>0||(m===15&&!cardio);
+  if(needWarm){h+=head(CAL_NAMES.warm,B[0]||5)+exBlock("5.1","Ver los ejercicios de calentamiento")}
+  if(!cardio){
+    var plan=strengthPlan(r,lv,m), list=P.rut[sl.r].slice(0,plan.length);
+    h+=head(CAL_NAMES.fuerza,B[1]);
+    list.forEach(function(it,k){h+=itemBlock(it,plan[k]+" series · descanso 40 s")});
+    h+='<p class="small">Descanso de 40 segundos entre series. Si no lo necesitas, sáltalo.</p>';
+    if(B[2]>0){
+      var nb=Math.min(P.bal.length,B[2]>=10?4:(B[2]>=7?3:2)); h+=head(CAL_NAMES.eq,B[2]);
+      for(var q=0;q<nb;q++)h+=itemBlock(P.bal[(rot+q)%P.bal.length]);
+    }
+    if(B[3]>0){h+=head(CAL_NAMES.car,B[3]);h+=itemBlock(P.car[rot%P.car.length])}
+  }else{
+    h+=head(CAL_NAMES.car,B[3]);h+=itemBlock(P.car[rot%P.car.length]);
+    if(B[2]>0){h+=head(CAL_NAMES.eq,B[2]);var n2=Math.min(P.bal.length,2);for(var z=0;z<n2;z++)h+=itemBlock(P.bal[(rot+z)%P.bal.length])}
+  }
+  if(B[4]>0){h+=head(CAL_NAMES.est,B[4])+'<p class="small">'+(m===45?'Haz los cinco estiramientos.':'Haz los cuatro primeros.')+'</p>'+exBlock("5.2","Ver los estiramientos")}
+  var k=doneKey(w,i);
+  h+='<div class="warn" style="margin-top:16px">Si notas dolor en el pecho, mareo o un dolor fuerte, para y consulta con tu médico. Si un ejercicio te duele, no lo hagas: en cada ejercicio tienes qué hacer en su lugar.</div>'+
+    '<div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="done" data-v="'+i+'">'+((r.done||{})[k]?'Sesión hecha ✓ (quitar)':'He terminado esta sesión')+'</button></div></div>';
+  app.innerHTML=h;
+}
+function rutinaClick(a,v){
+  var r=load();
+  if(a==="rutina"){ if(!r)return true; S.setMin=r.min||null;S.setDays=r.days||null; if(r.min&&r.days)viewWeek(); else viewSetup(); }
+  else if(a==="setmin"){S.setMin=parseInt(v,10);viewSetup()}
+  else if(a==="setdays"){S.setDays=parseInt(v,10);viewSetup()}
+  else if(a==="setok"){r.min=S.setMin;r.days=S.setDays; if(!r.start)r.start=new Date().toISOString().slice(0,10); save(r);viewWeek()}
+  else if(a==="setup"){S.setMin=r.min;S.setDays=r.days;viewSetup()}
+  else if(a==="wq"){r.wk2=v;r.cur=(v==="dificil")?r.week1:r.level;save(r);viewWeek()}
+  else if(a==="week"){viewWeek()}
+  else if(a==="day"){viewDay(parseInt(v,10))}
+  else if(a==="done"){var w=weekIdx(r),k=doneKey(w,parseInt(v,10));r.done=r.done||{};if(r.done[k])delete r.done[k];else r.done[k]=1;save(r);viewDay(parseInt(v,10))}
+  else return false;
+  return true;
 }
 
 /* ---- Eventos ---- */
@@ -236,6 +372,7 @@ app.addEventListener("click",function(e){
   }else if(a==="asback"){S.qi=Math.max(0,S.qi-1);viewAssess()}
   else if(a==="redo"){clear();S={step:"age",age:null,prog:null,qi:0,safety:[],ans:[]};viewAge()}
   else if(a==="soon"){viewResult(load())}
+  else if(!rutinaClick(a,v,b)){}
   window.scrollTo(0,0);
 });
 /* Atajos de teclado: Enter en la edad */
