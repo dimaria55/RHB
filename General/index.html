@@ -7,10 +7,10 @@
 <meta name="theme-color" content="#0a5c7a">
 <meta name="copyright" content="© 2026 Dr. José Manuel De María Prieto. Todos los derechos reservados.">
 <title>Gana fuerza, gana años · MiRehab</title>
-<link rel="manifest" href="../manifest-v4.webmanifest">
-<link rel="icon" type="image/png" sizes="192x192" href="../icon-192-v4.png">
-<link rel="shortcut icon" href="../favicon-v4.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon-v4.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <style>
 :root{--bg:#f2f6f7;--surface:#fff;--ink:#11222b;--muted:#4b6270;--line:#d3dde2;--brand:#0a5c7a;--brand-2:#e6f1f5;--warn-bg:#fff4e0;--warn-line:#e0a33a;--ok:#1b6b3a;color-scheme:light}
 *{box-sizing:border-box}
@@ -126,7 +126,6 @@ h3{font-size:1.15rem;margin:20px 0 6px;border-top:1px solid var(--line);padding-
 </head>
 <body>
 <main>
-<a class="back" href="../">← Volver</a>
 <h1>Gana fuerza, gana años</h1>
 <p class="sub">Ejercicio en casa</p>
 <div id="app"></div>
@@ -235,7 +234,7 @@ function viewAge(){
   app.innerHTML=h;
 }
 function viewTooYoung(){
-  app.innerHTML='<div class="card"><h2>Aún no tenemos rutinas para menores de 65 años</h2><p>Puedes volver al inicio y elegir la zona que quieres tratar.</p><div class="row" style="grid-template-columns:1fr"><a class="btn main" style="text-decoration:none;display:flex;align-items:center;justify-content:center" href="../">Volver al inicio</a></div></div>';
+  app.innerHTML='<div class="card"><h2>Aún no tenemos rutinas para menores de 65 años</h2><p>Este programa es para personas de 65 años o más. Si te has equivocado al escribir la edad, puedes corregirla.</p><div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="age0">Escribir la edad otra vez</button></div></div>';
 }
 function viewSafety(){
   var i=S.qi, n=SAFETY.length;
@@ -250,7 +249,7 @@ function viewSafetyResult(){
   var h='<div class="card">';
   if(anySi){
     h+='<div class="warn"><b>Has contestado «Sí» a alguna pregunta.</b><br>Antes de empezar, consulta con tu médico y cuéntale que quieres hacer estos ejercicios. Puedes continuar si decides hacerlo, pero te recomendamos hablar antes con él.</div>'+
-       '<div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="goassess">Quiero continuar</button><a class="btn ghost" style="text-decoration:none;display:flex;align-items:center;justify-content:center" href="../">Hablaré antes con mi médico</a></div>';
+       '<div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="goassess">Quiero continuar</button><button class="btn ghost" data-a="doctor">Hablaré antes con mi médico</button></div>';
   }else{
     h+='<h2>Muy bien</h2><p>No has marcado ninguna señal de alerta. Ahora vamos a ver tu nivel.</p><div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="goassess">Continuar</button></div>';
   }
@@ -799,6 +798,8 @@ app.addEventListener("click",function(e){
   if(a==="extab"){var card=b.closest("details");card.querySelectorAll(".lx-tabs button").forEach(function(x){x.setAttribute("aria-selected",x===b?"true":"false")});card.querySelectorAll(".lx-tp").forEach(function(p){p.hidden=p.getAttribute("data-p")!==v});return}
   if(a==="matt"||a==="zonet"){var arr=a==="matt"?S.chkMat:S.chkZ,ix=arr.indexOf(v);if(ix>=0)arr.splice(ix,1);else arr.push(v);b.setAttribute("aria-pressed",ix<0);return}
   if(a==="zoneall"){S.chkZ=(S.chkZ.length===ZONES.length)?[]:ZONES.map(function(z){return z[0]});viewCheck();return}
+  if(a==="age0"){viewAge();window.scrollTo(0,0);return}
+  if(a==="doctor"){app.innerHTML='<div class="card"><h2>Muy bien</h2><p>Habla con tu médico y cuéntale que quieres hacer estos ejercicios. Cuando quieras, vuelve a esta página y empieza.</p><div class="row" style="grid-template-columns:1fr"><button class="btn main" data-a="age0">Volver al principio</button></div></div>';window.scrollTo(0,0);return}
   if(a==="ouch"){ouch(b.getAttribute("data-id"),b.getAttribute("data-n"));viewDay(S.curDay);window.scrollTo(0,0);return}
   if(a==="guide"){guideStart(parseInt(v,10));return}
   if(a==="duda"){var nn=b.getAttribute("data-n");dudaToggle(nn);var on=dudaHas(nn);b.setAttribute("aria-pressed",on);b.textContent="❓ "+(on?"Duda anotada · quitar":"Tengo dudas con este ejercicio");return}
