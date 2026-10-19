@@ -50,15 +50,34 @@ input[type=number]:focus{outline:none;border-color:var(--brand)}
 footer{margin-top:24px;font-size:.85rem;color:var(--muted)}
 footer ul{padding-left:18px;margin:6px 0}
 footer .legal{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
-details.ex{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff}
-details.ex>summary{position:relative;padding-right:40px!important;cursor:pointer;padding:14px;font-weight:600;list-style:none;min-height:48px}
-details.ex>summary::-webkit-details-marker{display:none}
-details.ex>summary::after{content:"＋";position:absolute;right:14px;top:14px;color:var(--brand)}
-details.ex[open]>summary::after{content:"－"}
-.dose{display:block;font-weight:400;font-size:.9rem;color:var(--muted)}
-.exb{padding:0 14px 12px}
-.exb h4{margin:12px 0 4px;font-size:1rem;color:var(--brand)}
-.exb p{margin:0 0 6px}.exb ol,.exb ul{margin:0 0 6px;padding-left:22px}
+details.lx{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:10px 0}
+details.lx>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:flex-start;padding:14px;min-height:56px}
+details.lx>summary::-webkit-details-marker{display:none}
+.lx-b{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
+.lx-tt{font-weight:700;font-size:1.1rem;line-height:1.25}
+.lx-p{display:flex;flex-wrap:wrap;gap:5px}
+.lx-pl{font-size:.75rem;font-weight:600;padding:2px 9px;border-radius:999px}
+.lx-pl.ty{background:var(--brand-2);color:var(--brand)}
+.lx-pl.sr{background:#eef2f4;color:var(--muted)}
+.lx-cv::before{content:"▾";color:var(--muted);font-size:1.1rem}
+details.lx[open] .lx-cv::before{content:"▴"}
+.lx-x{padding:0 14px}
+.video{aspect-ratio:16/9;border:1px dashed var(--line);border-radius:10px;background:#eef2f4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.85rem}
+.video svg{width:34px;height:34px;fill:none;stroke:var(--brand);stroke-width:1.6}
+.lx-tabs{display:flex;margin:12px 14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#eef2f4}
+.lx-tabs button{flex:1;padding:12px 8px;border:0;background:none;color:var(--muted);font:600 .95rem inherit;font-family:inherit;cursor:pointer;min-height:48px}
+.lx-tabs button[aria-selected=true]{background:var(--brand);color:#fff}
+.lx-tp{padding:12px 14px 6px;font-size:.98rem;line-height:1.5}
+.lx-tp p{margin:0 0 8px}.lx-tp ol,.lx-tp ul{margin:0 0 8px;padding-left:22px}
+.lx-tp .lab{font-weight:700;color:var(--brand);margin:8px 0 2px}
+.lx-tp .dose{font-weight:700;color:var(--brand)}
+.lx-soon{color:var(--muted);font-style:italic}
+.lx-warn{margin:6px 14px 10px;padding:10px 12px;border-radius:12px;background:var(--warn-bg);border:1px solid var(--warn-line);font-size:.92rem}
+.lx-warn p,.lx-pain p{margin:4px 0 0}
+.lx-pain{margin:6px 14px 10px;padding:10px 12px;border-radius:12px;background:#f5eef6;border:1px solid #c9a6cf;font-size:.92rem}
+.dq-bar{display:flex;justify-content:center;margin:10px 12px 14px}
+.dq-btn{border:1px solid var(--line);background:#eef2f4;color:var(--ink);border-radius:999px;padding:8px 14px;font:600 .92rem inherit;font-family:inherit;min-height:44px;cursor:pointer}
+.dq-btn[aria-pressed=true]{background:#ffd84a;color:#2b2000;border-color:#2b2000}
 h3{font-size:1.15rem;margin:20px 0 6px;border-top:1px solid var(--line);padding-top:14px}
 [hidden]{display:none!important}
 </style>
@@ -252,21 +271,49 @@ function weekSlots(r,w){
   return [{t:"F",r:"A"},{t:"C"},{t:"F",r:"B"},{t:"C"},{t:"F",r:"C"}];
 }
 function doneKey(w,i){return "w"+w+"d"+i}
-function exBlock(id,extra){
-  var e=D.EX[id]; if(!e)return "";
-  var h='<details class="ex"><summary>'+esc(extra||e.t)+'</summary><div class="exb">';
-  e.s.forEach(function(sc){
-    if(sc.l==="Duración"&&/^4\./.test(id))return;
-    h+='<h4>'+esc(sc.l)+'</h4>';
-    if(sc.t)h+='<p>'+md(sc.t)+'</p>';
-    if(sc.items.length){var tg=sc.kind==="ol"?"ol":"ul";h+='<'+tg+'>'+sc.items.map(function(x){return '<li>'+md(x)+'</li>'}).join("")+'</'+tg+'>'}
-  });
-  return h+'</div></details>';
+var TYPE_NAME={"2":"Fuerza","3":"Equilibrio","4":"Cardio"};
+function typeOf(id){return id==="5.1"?"Calentamiento":(id==="5.2"?"Estiramientos":TYPE_NAME[id.charAt(0)])}
+var DKEY="pc-dr-dmp-dudas-v1"; /* misma lista de dudas que el resto del portal */
+function dudas(){try{var a=JSON.parse(localStorage.getItem(DKEY)||"[]");return Array.isArray(a)?a.filter(function(x){return typeof x==="string"&&x.length<120}).slice(0,60):[]}catch(e){return[]}}
+function dudaHas(n){return dudas().indexOf(n)>=0}
+function dudaToggle(n){var a=dudas(),k=a.indexOf(n);if(k>=0)a.splice(k,1);else a.push(n);try{localStorage.setItem(DKEY,JSON.stringify(a))}catch(e){}}
+function secHtml(sc){
+  var h='';
+  if(sc.t)h+='<p>'+(sc.l&&!/^(Material|Cómo se hace|Respiración)$/.test(sc.l)?'<b>'+esc(sc.l)+'.</b> ':'')+md(sc.t)+'</p>';
+  if(sc.items.length){var tg=sc.kind==="ol"?"ol":"ul";h+=(sc.t?'':'<p class="lab">'+esc(sc.l)+'</p>')+'<'+tg+'>'+sc.items.map(function(x){return '<li>'+md(x)+'</li>'}).join("")+'</'+tg+'>'}
+  return h;
 }
+var exN=0;
+function cap(t){return t.charAt(0).toUpperCase()+t.slice(1)}
+function exBlock(id,extra,dose){
+  var e=D.EX[id]; if(!e)return "";
+  var name=extra||e.t, how="", hdose="", care="", pain="";
+  e.s.forEach(function(sc){
+    var l=sc.l;
+    if(/^Si te duele/.test(l)){var wh=l.replace(/^Si te duele\s*/,"");pain+='<p>'+(wh?'<b>'+esc(wh.charAt(0).toUpperCase()+wh.slice(1))+':</b> ':'')+cap(md(sc.t||sc.items.join(" ")))+'</p>';return}
+    if(l==="Cuidado"){care+='<p>'+cap(md(sc.t))+'</p>';return}
+    if(l==="Duración"&&/^4\./.test(id))return;
+    if(/^Dosis|^Duración$|^Intensidad$/.test(l)){hdose+='<p class="dose">'+md(sc.t||sc.items.join(" · "))+'</p>';return}
+    if(/^(Material|Cómo se hace|Respiración)$/.test(l)&&sc.t&&!sc.items.length){how+='<p><b>'+esc(l)+':</b> '+md(sc.t)+'</p>';return}
+    if(l==="Cómo se hace"){how+=secHtml(sc);return}
+    how+=secHtml(sc);
+  });
+  var uid="ex"+(++exN), pill=typeOf(id);
+  var h='<details class="lx"><summary class="lx-top"><span class="lx-b"><span class="lx-tt">'+esc(name)+'</span>'+
+    '<span class="lx-p"><span class="lx-pl ty">'+pill+'</span>'+(dose?'<span class="lx-pl sr">'+esc(dose)+'</span>':'')+'</span></span><span class="lx-cv" aria-hidden="true"></span></summary>'+
+    '<div class="lx-x"><div class="video" role="img" aria-label="Vídeo pendiente"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M10 8.5v7l6-3.5z"/></svg><span>Vídeo próximamente</span></div></div>'+
+    '<div class="lx-tabs" role="tablist"><button role="tab" aria-selected="true" data-a="extab" data-v="how">¿Cómo hacerlo?</button><button role="tab" aria-selected="false" data-a="extab" data-v="why">¿Por qué?</button></div>'+
+    '<div class="lx-tp" data-p="how">'+how+hdose+'</div>'+
+    '<div class="lx-tp" data-p="why" hidden>'+(WHY[id]?'<p>'+md(WHY[id])+'</p>':'<p class="lx-soon">Pronto explicaremos aquí para qué sirve este ejercicio y qué consigues con él.</p>')+'</div>'+
+    (care?'<div class="lx-warn" role="note"><b>⚠️ Cuidado</b>'+care+'</div>':'')+
+    (pain?'<div class="lx-pain"><b>Si te duele</b>'+pain+'</div>':'')+
+    '<div class="dq-bar"><button class="dq-btn" data-a="duda" data-n="'+esc(name)+'" aria-pressed="'+dudaHas(name)+'">❓ '+(dudaHas(name)?'Duda anotada · quitar':'Tengo dudas con este ejercicio')+'</button></div></details>';
+  return h;
+}
+var WHY=(window.GFGA_WHY)||{};
 function itemBlock(it,note){
-  var main=exBlock(it.e[0],it.n);
+  var main=exBlock(it.e[0],it.n,note);
   if(it.e.length>1)it.e.slice(1).forEach(function(id){main+=exBlock(id)});
-  if(note)main=main.replace('</summary>','<span class="dose">'+esc(note)+'</span></summary>');
   return main;
 }
 function viewSetup(){
@@ -351,6 +398,8 @@ function rutinaClick(a,v){
 app.addEventListener("click",function(e){
   var b=e.target.closest("[data-a]"); if(!b)return;
   var a=b.getAttribute("data-a"), v=b.getAttribute("data-v");
+  if(a==="extab"){var card=b.closest("details");card.querySelectorAll(".lx-tabs button").forEach(function(x){x.setAttribute("aria-selected",x===b?"true":"false")});card.querySelectorAll(".lx-tp").forEach(function(p){p.hidden=p.getAttribute("data-p")!==v});return}
+  if(a==="duda"){var nn=b.getAttribute("data-n");dudaToggle(nn);var on=dudaHas(nn);b.setAttribute("aria-pressed",on);b.textContent="❓ "+(on?"Duda anotada · quitar":"Tengo dudas con este ejercicio");return}
   if(a==="age"){
     var n=parseInt(document.getElementById("age").value,10);
     if(!(n>=1&&n<=120)){document.getElementById("agemsg").textContent="Escribe tu edad en años, por ejemplo 72.";return}
